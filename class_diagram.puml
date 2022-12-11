@@ -1,0 +1,37 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Animal {
+    {abstract} clone()
+}
+
+class Rabbit
+Animal <|-- Rabbit
+Rabbit : clone()
+
+class Fox
+Animal <|-- Fox
+Fox : clone()
+
+class Field
+Field o-- Animal
+
+class ControlPanel
+ControlPanel ..> Field
+
+class MainWindow
+MainWindow --> Field
+MainWindow --> SimulationCanvas
+MainWindow ..> ControlPanel
+MainWindow ..> StatisticsPanel
+
+class SimulationCanvas
+SimulationCanvas --> Field
+
+class StatisticsPanel
+StatisticsPanel --> Field
+StatisticsPanel --> Statistics
+
+class Statistics
+
+@enduml
