@@ -33,7 +33,7 @@ public class Fox extends Animal {
       var newY = newPos.getSecond();
 
       if (!field.cellTaken(newX, newY)) {
-        var fox = clone();
+        var fox = new Fox();
         fox.setPosition(newX, newY);
         energy /= 2;
         fox.setEnergy(energy);
@@ -47,16 +47,24 @@ public class Fox extends Animal {
    * A fox dies if its energy level drops to zero.
    */
   @Override
-  public void loseEnergy(Field field) {
-    if (--energy <= 0) {
+  public void loseEnergy() {
+    --energy;
+  }
+
+  /**
+   * Update the field based on this fox's state
+   */
+  @Override
+  public void update(Field field) {
+    if (energy <= 0) {
       field.remove(x, y);
     }
   }
 
-  @Override
-  public Fox clone() {
-    var fox = new Fox();
-    fox.setPosition(x, y);
-    return fox;
-  }
+//  @Override
+//  public Fox clone() {
+//    var fox = new Fox();
+//    fox.setPosition(x, y);
+//    return fox;
+//  }
 }

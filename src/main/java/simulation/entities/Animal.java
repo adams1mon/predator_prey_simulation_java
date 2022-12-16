@@ -7,6 +7,7 @@ import simulation.entities.components.PositionComponent;
 import utils.Pair;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 
 public abstract class Animal {
 
@@ -42,10 +43,6 @@ public abstract class Animal {
     this.y = y;
   }
 
-  public Pair<Integer, Integer> getNewPosition(Field field) {
-    return positionComponent.findNewPositionFromCurrent(this, field);
-  }
-
   public int getEnergy() {
     return energy;
   }
@@ -66,8 +63,11 @@ public abstract class Animal {
     moveComponent.move(this, field);
   }
 
-  public void loseEnergy(Field field) {
+  public Pair<Integer, Integer> getNewPosition(Field field) {
+    return positionComponent.findNewPositionFromCurrent(this, field);
   }
 
+  public void loseEnergy() {}
+  public void update(Field field) {}
   public abstract void spawnOffspring(Field field);
 }

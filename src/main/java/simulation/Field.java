@@ -14,6 +14,7 @@ public class Field {
 
   private final ArrayList<ArrayList<Animal>> grid = new ArrayList<>();
   private HashSet<Animal> animals = new HashSet<>();
+
   private LinkedList<Animal> addBuffer = new LinkedList<>();
   private LinkedList<Animal> removeBuffer = new LinkedList<>();
 
@@ -21,14 +22,7 @@ public class Field {
     this.width = width;
     this.height = height;
 
-    for (int i = 0; i < height; ++i) {
-      var row = new ArrayList<Animal>();
-      for (int j = 0; j < width; ++j) {
-        row.add(null);
-      }
-      grid.add(row);
-    }
-
+    createEmptyGrid();
     addRabbits(rabbitCount);
     addFoxes(foxCount);
   }
@@ -42,24 +36,30 @@ public class Field {
   }
 
   public Collection<Animal> getAnimals() {
-    return animals;
+    var animalsCopy = new HashSet<Animal>(animals.size());
+    animalsCopy.addAll(animals);
+    return animalsCopy;
   }
 
   public void addRabbits(int count) {
-    var firstRabbit = new Rabbit();
-    tryToPlaceOnFreeCell(firstRabbit);
-
     for (int i = 0; i < count; ++i) {
-      tryToPlaceOnFreeCell(firstRabbit.clone());
+      tryToPlaceOnFreeCell(new Rabbit());
     }
   }
 
   public void addFoxes(int count) {
-    var firstFox = new Fox();
-    tryToPlaceOnFreeCell(firstFox);
-
     for (int i = 0; i < count; ++i) {
-      tryToPlaceOnFreeCell(firstFox.clone());
+      tryToPlaceOnFreeCell(new Fox());
+    }
+  }
+
+  private void createEmptyGrid() {
+    for (int i = 0; i < height; ++i) {
+      var row = new ArrayList<Animal>();
+      for (int j = 0; j < width; ++j) {
+        row.add(null);
+      }
+      grid.add(row);
     }
   }
 
@@ -96,7 +96,7 @@ public class Field {
     grid.get(y).set(x, animal);
   }
 
-  public void remove(int x, int y) {
+  public synchronized void remove(int x, int y) {
     removeBuffer.add(grid.get(y).get(x));
     grid.get(y).set(x, null);
   }
@@ -112,13 +112,14 @@ public class Field {
     }
   }
 
-  public void simulate() {
+  public synchronized void simulate() {
     updateAnimals();
 
     for (Animal animal : animals) {
       animal.move(this);
       animal.spawnOffspring(this);
-      animal.loseEnergy(this);
+      animal.loseEnergy();
+      animal.update(this);
     }
   }
 
@@ -130,11 +131,15 @@ public class Field {
    */
   private void updateAnimals() {
     var newAnimals = new HashSet<>(animals);
+
     newAnimals.addAll(addBuffer);
     removeBuffer.forEach(newAnimals::remove);
 
-    addBuffer = new LinkedList<>();
-    removeBuffer = new LinkedList<>();
+    addBuffer.clear();
+    removeBuffer.clear();
+
+//    addBuffer = new LinkedList<>();
+//    removeBuffer = new LinkedList<>();
 
 //        animals = newAnimals
 
@@ -152,24 +157,26 @@ public class Field {
       }
     }
 
-//        animals = newAnimals
+//      animals = newAnimals;
     animals = newAnimalsCopy;
   }
 
-  public void clear() {
-    animals = new HashSet<>();
+  public synchronized void clear() {
+    animals.clear();
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         grid.get(i).set(j, null);
       }
     }
-    addBuffer = new LinkedList<>();
-    removeBuffer = new LinkedList<>();
+    addBuffer.clear();
+    removeBuffer.clear();
+//    addBuffer = new LinkedList<>();
+//    removeBuffer = new LinkedList<>();
   }
 
-  public void cloneAll() {
-    for (Animal animal : animals) {
-      tryToPlaceOnFreeCell(animal);
-    }
-  }
+//  public void cloneAll() {
+//    for (Animal animal : animals) {
+//      tryToPlaceOnFreeCell(animal);
+//    }
+//  }
 }

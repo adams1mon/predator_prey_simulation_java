@@ -1,6 +1,5 @@
 package gui;
 
-import simulation.Field;
 import simulation.GameLoop;
 
 import javax.swing.*;

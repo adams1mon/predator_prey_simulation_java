@@ -5,19 +5,16 @@ import simulation.entities.Animal;
 import simulation.entities.components.PositionComponent;
 import utils.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class ObjectPositionComponent implements PositionComponent {
 
-  public static ArrayList<Pair<Integer, Integer>> DIRECTIONS = new ArrayList<>(
-      List.of(
-          new Pair<>(-1, 0),
-          new Pair<>(0, -1),
-          new Pair<>(1, 0),
-          new Pair<>(0, 1)
-      )
+  public static List<Pair<Integer, Integer>> DIRECTIONS = List.of(
+    new Pair<>(-1, 0),
+    new Pair<>(0, -1),
+    new Pair<>(1, 0),
+    new Pair<>(0, 1)
   );
 
   @Override

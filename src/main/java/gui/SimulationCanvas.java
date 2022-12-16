@@ -20,7 +20,7 @@ public class SimulationCanvas extends JPanel {
         fieldHeight * CELL_SIZE
     );
 
-    this.field = new Field(fieldWidth, fieldHeight, rabbitCount, foxCount);;
+    this.field = new Field(fieldWidth, fieldHeight, rabbitCount, foxCount);
   }
 
   public Field getField() {

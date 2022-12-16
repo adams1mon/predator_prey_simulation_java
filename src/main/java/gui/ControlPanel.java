@@ -27,9 +27,9 @@ public class ControlPanel extends JPanel {
     addFoxesBtn.addActionListener(e -> field.addFoxes(spinnerValue));
     add(addFoxesBtn);
 
-    var cloneAll = new JButton("Clone all");
-    cloneAll.addActionListener(e -> field.cloneAll());
-    add(cloneAll);
+//    var cloneAll = new JButton("Clone all");
+//    cloneAll.addActionListener(e -> field.cloneAll());
+//    add(cloneAll);
 
     var clearBtn = new JButton("Clear");
     clearBtn.addActionListener(e -> field.clear());

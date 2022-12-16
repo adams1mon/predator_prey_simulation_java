@@ -29,17 +29,18 @@ public class Rabbit extends Animal {
       var newX = newPos.getFirst();
       var newY = newPos.getSecond();
       if (!field.cellTaken(newX, newY)) {
-        var rabbit = clone();
+        var rabbit = new Rabbit();
         rabbit.setPosition(newX, newY);
         field.add(newX, newY, rabbit);
       }
     }
   }
 
-  @Override
-  public Rabbit clone() {
-    var rabbit = new Rabbit();
-    rabbit.setPosition(x, y);
-    return rabbit;
-  }
+
+  //  @Override
+//  public Rabbit clone() {
+//    var rabbit = new Rabbit();
+//    rabbit.setPosition(x, y);
+//    return rabbit;
+//  }
 }
