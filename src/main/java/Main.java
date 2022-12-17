@@ -1,5 +1,8 @@
+import gui.ControlPanel;
 import gui.MainWindow;
 import gui.SimulationCanvas;
+import gui.StatisticsPanel;
+import simulation.Field;
 import simulation.GameLoop;
 import utils.LazyContainer;
 
@@ -11,15 +14,12 @@ public class Main {
     int rabbits = 50;
     int foxes = 50;
 
-//    LazyContainer.register(new SimulationCanvas(width, height, rabbits, foxes));
-//    LazyContainer.register(new GameLoop((SimulationCanvas) LazyContainer.getInstance(SimulationCanvas.class)));
+    LazyContainer.register(new Field(width, height, rabbits, foxes));
+    LazyContainer.register(new SimulationCanvas());
+    LazyContainer.register(new GameLoop());
+    LazyContainer.register(new ControlPanel());
+    LazyContainer.register(new StatisticsPanel());
 
-    new MainWindow(
-        "Something",
-        width,
-        height,
-        rabbits,
-        foxes
-    );
+    new MainWindow("Something");
   }
 }

@@ -16,10 +16,7 @@ public class Field {
   private final int height;
 
   private final ArrayList<ArrayList<Animal>> grid = new ArrayList<>();
-  private HashSet<Animal> animals = new HashSet<>();
-
-  private final LinkedList<Animal> addBuffer = new LinkedList<>();
-  private final LinkedList<Animal> removeBuffer = new LinkedList<>();
+  private final HashSet<Animal> animals = new HashSet<>();
 
   private final ReadWriteLock gridLock = new ReentrantReadWriteLock();
   private final Lock readLock = gridLock.readLock();
@@ -123,7 +120,6 @@ public class Field {
   public void add(int x, int y, Animal animal) {
     try {
       writeLock.lock();
-      //      addBuffer.add(animal);
       animals.add(animal);
       grid.get(y).set(x, animal);
     } finally {
@@ -137,7 +133,6 @@ public class Field {
   public void remove(int x, int y) {
     try {
       writeLock.lock();
-//      removeBuffer.add(grid.get(y).get(x));
       animals.remove(grid.get(y).get(x));
       grid.get(y).set(x, null);
     } finally {
@@ -176,8 +171,6 @@ public class Field {
    * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
    */
   public void simulate() {
-//    updateAnimals();
-
     readLock.lock();
     var animalsCopy = new HashSet<>(animals);
     readLock.unlock();
@@ -197,44 +190,6 @@ public class Field {
   }
 
   /**
-   * There is a concurrency issue here that i am not aware of...
-   * Without copying the array a second time (newAnimalsCopy),
-   * foxes with negative don't get deleted properly from the 'animals' array
-   * in spite of the remove buffer
-   */
-  private void updateAnimals() {
-    var newAnimals = new HashSet<>(animals);
-
-    newAnimals.addAll(addBuffer);
-    removeBuffer.forEach(newAnimals::remove);
-
-    addBuffer.clear();
-    removeBuffer.clear();
-
-//    addBuffer = new LinkedList<>();
-//    removeBuffer = new LinkedList<>();
-
-//        animals = newAnimals
-
-    var newAnimalsCopy = new HashSet<>(newAnimals);
-
-    for (Animal animal : newAnimals) {
-      if (animal instanceof Fox) {
-        if (animal.getEnergy() <= 0) {
-//                    this gets run a lof of times...
-//                    println("update: removing fox energy: ${animal.energy}")
-          newAnimalsCopy.remove(animal);
-//                    val (x, y) = animal.getPosition()
-//                    grid[y][x] = null
-        }
-      }
-    }
-
-//      animals = newAnimals;
-    animals = newAnimalsCopy;
-  }
-
-  /**
    * "grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
    */
   public void clear() {
@@ -246,18 +201,8 @@ public class Field {
           grid.get(i).set(j, null);
         }
       }
-//    addBuffer.clear();
-//    removeBuffer.clear();
-//    addBuffer = new LinkedList<>();
-//    removeBuffer = new LinkedList<>();
     } finally {
       writeLock.unlock();
     }
   }
-
-//  public void cloneAll() {
-//    for (Animal animal : animals) {
-//      tryToPlaceOnFreeCell(animal);
-//    }
-//  }
 }

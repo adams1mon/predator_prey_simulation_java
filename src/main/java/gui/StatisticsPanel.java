@@ -2,6 +2,7 @@ package gui;
 
 import simulation.Field;
 import stats.Statistics;
+import utils.LazyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +16,11 @@ public class StatisticsPanel extends JPanel {
   private final JLabel rabbitCountLabel = new JLabel();
   private final JLabel foxEnergyLabel = new JLabel();
 
-  public StatisticsPanel(Field field) {
+  public StatisticsPanel() {
 
-    this.statistics = new Statistics(field);
+    this.statistics = new Statistics(
+        (Field) LazyContainer.getInstance(Field.class)
+    );
 
     updateLabels();
     statistics.addChangeListener(this::updateLabels);

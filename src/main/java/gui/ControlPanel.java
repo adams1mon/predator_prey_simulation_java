@@ -2,6 +2,7 @@ package gui;
 
 import simulation.Field;
 import simulation.GameLoop;
+import utils.LazyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,10 @@ public class ControlPanel extends JPanel {
 
   private int spinnerValue = 20;
 
-  public ControlPanel(Field field, GameLoop gameLoop) {
+  public ControlPanel() {
+
+    var field = (Field) LazyContainer.getInstance(Field.class);
+    var gameLoop = (GameLoop) LazyContainer.getInstance(GameLoop.class);
 
     setLayout(new FlowLayout());
 

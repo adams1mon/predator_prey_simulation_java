@@ -1,6 +1,7 @@
 package simulation;
 
 import gui.SimulationCanvas;
+import utils.LazyContainer;
 
 public class GameLoop {
 
@@ -10,8 +11,8 @@ public class GameLoop {
   private boolean running = false;
   private Thread thread;
 
-  public GameLoop(SimulationCanvas canvas) {
-    this.canvas = canvas;
+  public GameLoop() {
+    this.canvas = (SimulationCanvas) LazyContainer.getInstance(SimulationCanvas.class);
   }
 
   public void start() {

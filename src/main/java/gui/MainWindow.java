@@ -1,6 +1,7 @@
 package gui;
 
 import simulation.GameLoop;
+import utils.LazyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,14 +10,8 @@ public class MainWindow extends JFrame {
 
   private final String title;
 
-  private final SimulationCanvas canvas;
-  private final GameLoop gameLoop;
-
-  public MainWindow(String title, int fieldWidth, int fieldHeight, int rabbitCount, int foxCount) {
+  public MainWindow(String title) {
     this.title = title;
-    this.canvas = new SimulationCanvas(fieldWidth, fieldHeight, rabbitCount, foxCount);
-    this.gameLoop = new GameLoop(canvas);
-
     setupFrame();
     startGameLoop();
   }
@@ -36,6 +31,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addCanvas() {
+    var canvas = (SimulationCanvas) LazyContainer.getInstance(SimulationCanvas.class);
     var constraints = new GridBagConstraints();
     constraints.gridx = 0;
     constraints.gridy = 0;
@@ -43,7 +39,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addControlPanel() {
-    var controlPanel = new ControlPanel(canvas.getField(), gameLoop);
+    var controlPanel = (ControlPanel) LazyContainer.getInstance(ControlPanel.class);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;
@@ -52,7 +48,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addStatisticsPanel() {
-    var statsPanel = new StatisticsPanel(canvas.getField());
+    var statsPanel = (StatisticsPanel) LazyContainer.getInstance(StatisticsPanel.class);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;
@@ -61,6 +57,7 @@ public class MainWindow extends JFrame {
   }
 
   private void startGameLoop() {
+    var gameLoop = (GameLoop) LazyContainer.getInstance(GameLoop.class);
     gameLoop.start();
   }
 }
