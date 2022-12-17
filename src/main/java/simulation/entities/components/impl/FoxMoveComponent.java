@@ -2,6 +2,7 @@ package simulation.entities.components.impl;
 
 import simulation.Field;
 import simulation.entities.Animal;
+import simulation.entities.Rabbit;
 import simulation.entities.components.MoveComponent;
 
 import static simulation.entities.Fox.ENERGY_PER_RABBIT;
@@ -23,13 +24,15 @@ public class FoxMoveComponent implements MoveComponent {
     var newX = newPos.getFirst();
     var newY = newPos.getSecond();
 
-    var rabbitOnCell = field.rabbitOnCell(newX, newY);
-    if (field.cellTaken(newX, newY) && !rabbitOnCell)
-      return;
+    var animalOnCell = field.getAnimal(newX, newY);
 
-    if (rabbitOnCell) {
-      field.remove(newX, newY);
-      animal.addEnergy(ENERGY_PER_RABBIT);
+    if (animalOnCell != null) {
+      if (animalOnCell instanceof Rabbit) {
+        field.remove(newX, newY);
+        animal.addEnergy(ENERGY_PER_RABBIT);
+      } else {
+        return;
+      }
     }
 
     field.move(oldX, oldY, newX, newY);

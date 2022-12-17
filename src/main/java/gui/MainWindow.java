@@ -43,7 +43,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addControlPanel() {
-    var controlPanel = new ControlPanel(canvas.getField());
+    var controlPanel = new ControlPanel(canvas.getField(), gameLoop);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;

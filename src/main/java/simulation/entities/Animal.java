@@ -67,7 +67,6 @@ public abstract class Animal {
     return positionComponent.findNewPositionFromCurrent(this, field);
   }
 
-  public void loseEnergy() {}
-  public void update(Field field) {}
+  public void loseEnergy(Field field) {}
   public abstract void spawnOffspring(Field field);
 }

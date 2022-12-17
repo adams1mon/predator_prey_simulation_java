@@ -18,20 +18,24 @@ Field o-- Animal
 
 class ControlPanel
 ControlPanel ..> Field
+ControlPanel ..> GameLoop
 
 class MainWindow
-MainWindow --> Field
+MainWindow --> GameLoop
 MainWindow --> SimulationCanvas
 MainWindow ..> ControlPanel
 MainWindow ..> StatisticsPanel
+
+GameLoop --> SimulationCanvas
 
 class SimulationCanvas
 SimulationCanvas --> Field
 
 class StatisticsPanel
-StatisticsPanel --> Field
+StatisticsPanel ..> Field
 StatisticsPanel --> Statistics
 
 class Statistics
+Statistics ..> Field
 
 @enduml

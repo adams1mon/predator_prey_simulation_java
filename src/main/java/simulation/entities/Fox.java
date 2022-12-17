@@ -47,16 +47,8 @@ public class Fox extends Animal {
    * A fox dies if its energy level drops to zero.
    */
   @Override
-  public void loseEnergy() {
-    --energy;
-  }
-
-  /**
-   * Update the field based on this fox's state
-   */
-  @Override
-  public void update(Field field) {
-    if (energy <= 0) {
+  public void loseEnergy(Field field) {
+    if (--energy <= 0) {
       field.remove(x, y);
     }
   }

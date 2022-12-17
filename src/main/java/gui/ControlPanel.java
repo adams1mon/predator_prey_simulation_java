@@ -1,6 +1,7 @@
 package gui;
 
 import simulation.Field;
+import simulation.GameLoop;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,14 +10,13 @@ public class ControlPanel extends JPanel {
 
   private int spinnerValue = 20;
 
-  public ControlPanel(Field field) {
+  public ControlPanel(Field field, GameLoop gameLoop) {
 
     setLayout(new FlowLayout());
 
     var spinner = new JSpinner();
     spinner.setModel(new SpinnerNumberModel(spinnerValue, 1, 80, 1));
-    spinner.addChangeListener((event) -> ++spinnerValue);
-
+    spinner.addChangeListener((event) -> spinnerValue = Integer.parseInt(spinner.getValue().toString()));
     add(spinner);
 
     var addRabbitsBtn = new JButton("Add rabbits");
@@ -27,12 +27,25 @@ public class ControlPanel extends JPanel {
     addFoxesBtn.addActionListener(e -> field.addFoxes(spinnerValue));
     add(addFoxesBtn);
 
-//    var cloneAll = new JButton("Clone all");
-//    cloneAll.addActionListener(e -> field.cloneAll());
-//    add(cloneAll);
+    var toggleStopStartBtn = new JButton("Stop");
+    toggleStopStartBtn.addActionListener(e -> {
+      if (gameLoop.isRunning()) {
+        gameLoop.stop();
+        toggleStopStartBtn.setText("Start");
+      } else {
+        gameLoop.start();
+        toggleStopStartBtn.setText("Stop");
+      }
+    });
+    add(toggleStopStartBtn);
 
     var clearBtn = new JButton("Clear");
-    clearBtn.addActionListener(e -> field.clear());
+    clearBtn.addActionListener(e -> {
+      gameLoop.stop();
+      toggleStopStartBtn.setText("Start");
+      field.clear();
+      gameLoop.repaintOnce();
+    });
     add(clearBtn);
   }
 }

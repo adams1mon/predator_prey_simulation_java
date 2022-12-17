@@ -6,6 +6,9 @@ import simulation.entities.Rabbit;
 
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Field {
 
@@ -15,8 +18,12 @@ public class Field {
   private final ArrayList<ArrayList<Animal>> grid = new ArrayList<>();
   private HashSet<Animal> animals = new HashSet<>();
 
-  private LinkedList<Animal> addBuffer = new LinkedList<>();
-  private LinkedList<Animal> removeBuffer = new LinkedList<>();
+  private final LinkedList<Animal> addBuffer = new LinkedList<>();
+  private final LinkedList<Animal> removeBuffer = new LinkedList<>();
+
+  private final ReadWriteLock gridLock = new ReentrantReadWriteLock();
+  private final Lock readLock = gridLock.readLock();
+  private final Lock writeLock = gridLock.writeLock();
 
   public Field(int width, int height, int rabbitCount, int foxCount) {
     this.width = width;
@@ -36,9 +43,12 @@ public class Field {
   }
 
   public Collection<Animal> getAnimals() {
-    var animalsCopy = new HashSet<Animal>(animals.size());
-    animalsCopy.addAll(animals);
-    return animalsCopy;
+    try {
+      readLock.lock();
+      return new HashSet<>(animals);
+    } finally {
+      readLock.unlock();
+    }
   }
 
   public void addRabbits(int count) {
@@ -83,43 +93,106 @@ public class Field {
     add(x, y, animal);
   }
 
+  /**
+   * "grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
   public boolean cellTaken(int x, int y) {
-    return grid.get(y).get(x) != null;
-  }
-
-  public boolean rabbitOnCell(int x, int y) {
-    return grid.get(y).get(x) instanceof Rabbit;
-  }
-
-  public void add(int x, int y, Animal animal) {
-    addBuffer.add(animal);
-    grid.get(y).set(x, animal);
-  }
-
-  public synchronized void remove(int x, int y) {
-    removeBuffer.add(grid.get(y).get(x));
-    grid.get(y).set(x, null);
-  }
-
-  public void move(int oldX, int oldY, int newX, int newY) {
-    grid.get(newY).set(newX, grid.get(oldY).get(oldX));
-    grid.get(oldY).set(oldX, null);
-  }
-
-  public void draw(Graphics graphics) {
-    for (Animal animal : animals) {
-      animal.draw(graphics);
+    try {
+      readLock.lock();
+      return grid.get(y).get(x) != null;
+    } finally {
+      readLock.unlock();
     }
   }
 
-  public synchronized void simulate() {
-    updateAnimals();
+  /**
+   * "grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public Animal getAnimal(int x, int y) {
+    try {
+      readLock.lock();
+      return grid.get(y).get(x);
+    } finally {
+      readLock.unlock();
+    }
+  }
 
-    for (Animal animal : animals) {
-      animal.move(this);
-      animal.spawnOffspring(this);
-      animal.loseEnergy();
-      animal.update(this);
+  /**
+   * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public void add(int x, int y, Animal animal) {
+    try {
+      writeLock.lock();
+      //      addBuffer.add(animal);
+      animals.add(animal);
+      grid.get(y).set(x, animal);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  /**
+   * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public void remove(int x, int y) {
+    try {
+      writeLock.lock();
+//      removeBuffer.add(grid.get(y).get(x));
+      animals.remove(grid.get(y).get(x));
+      grid.get(y).set(x, null);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  /**
+   * "grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public void move(int oldX, int oldY, int newX, int newY) {
+    try {
+      writeLock.lock();
+      grid.get(newY).set(newX, grid.get(oldY).get(oldX));
+      grid.get(oldY).set(oldX, null);
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
+  /**
+   * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public void draw(Graphics graphics) {
+    try {
+      readLock.lock();
+      for (Animal animal : animals) {
+        animal.draw(graphics);
+      }
+    } finally {
+      readLock.unlock();
+    }
+  }
+
+  /**
+   * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public void simulate() {
+//    updateAnimals();
+
+    readLock.lock();
+    var animalsCopy = new HashSet<>(animals);
+    readLock.unlock();
+
+    for (Animal animal : animalsCopy) {
+
+      readLock.lock();
+      var outdated = !animals.contains(animal);
+      readLock.unlock();
+
+      if (!outdated) {
+       animal.move(this);
+       animal.spawnOffspring(this);
+       animal.loseEnergy(this);
+      }
     }
   }
 
@@ -161,17 +234,25 @@ public class Field {
     animals = newAnimalsCopy;
   }
 
-  public synchronized void clear() {
-    animals.clear();
-    for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < width; ++j) {
-        grid.get(i).set(j, null);
+  /**
+   * "grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
+   */
+  public void clear() {
+    try {
+      writeLock.lock();
+      animals.clear();
+      for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+          grid.get(i).set(j, null);
+        }
       }
-    }
-    addBuffer.clear();
-    removeBuffer.clear();
+//    addBuffer.clear();
+//    removeBuffer.clear();
 //    addBuffer = new LinkedList<>();
 //    removeBuffer = new LinkedList<>();
+    } finally {
+      writeLock.unlock();
+    }
   }
 
 //  public void cloneAll() {
