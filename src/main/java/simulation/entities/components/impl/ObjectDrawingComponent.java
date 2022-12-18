@@ -2,7 +2,7 @@ package simulation.entities.components.impl;
 
 import simulation.entities.Animal;
 import simulation.entities.components.DrawingComponent;
-import simulation.field.Config;
+import config.Config;
 import utils.LazyContainer;
 
 import java.awt.*;

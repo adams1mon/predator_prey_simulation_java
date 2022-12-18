@@ -11,7 +11,7 @@ public class RabbitMoveComponent implements MoveComponent {
     var oldX = oldPos.getFirst();
     var oldY = oldPos.getSecond();
 
-    var newPos = animal.getNewPosition(field);
+    var newPos = animal.getNewPosition();
     var newX = newPos.getFirst();
     var newY = newPos.getSecond();
 

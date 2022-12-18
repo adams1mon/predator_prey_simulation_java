@@ -62,7 +62,7 @@ public abstract class Animal {
     moveComponent.move(this, field);
   }
 
-  public Pair<Integer, Integer> getNewPosition(Field field) {
+  public Pair<Integer, Integer> getNewPosition() {
     return positionComponent.findNewPositionFromCurrent(this);
   }
 

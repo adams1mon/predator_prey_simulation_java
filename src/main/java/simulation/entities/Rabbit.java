@@ -25,7 +25,7 @@ public class Rabbit extends Animal {
   public void spawnOffspring(Field field) {
     if (--breedTime <= 0) {
       breedTime = BREED_TIME;
-      var newPos = getNewPosition(field);
+      var newPos = getNewPosition();
       var newX = newPos.getFirst();
       var newY = newPos.getSecond();
       if (!field.cellTaken(newX, newY)) {

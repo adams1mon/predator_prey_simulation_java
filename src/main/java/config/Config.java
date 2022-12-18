@@ -1,4 +1,4 @@
-package simulation.field;
+package config;
 
 import java.io.FileInputStream;
 import java.io.IOException;

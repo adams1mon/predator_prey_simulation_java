@@ -17,10 +17,7 @@ public class StatisticsPanel extends JPanel {
   private final JLabel foxEnergyLabel = new JLabel();
 
   public StatisticsPanel() {
-
-    this.statistics = new Statistics(
-        (Field) LazyContainer.getInstance(Field.class)
-    );
+    this.statistics = new Statistics((Field) LazyContainer.getInstance(Field.class));
 
     updateLabels();
     statistics.addChangeListener(this::updateLabels);

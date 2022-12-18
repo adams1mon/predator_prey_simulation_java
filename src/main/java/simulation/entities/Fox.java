@@ -28,7 +28,7 @@ public class Fox extends Animal {
   @Override
   public void spawnOffspring(Field field) {
     if (energy >= ENERGY_LIMIT) {
-      var newPos = getNewPosition(field);
+      var newPos = getNewPosition();
       var newX = newPos.getFirst();
       var newY = newPos.getSecond();
 

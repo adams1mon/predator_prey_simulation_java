@@ -1,5 +1,6 @@
 package simulation.field;
 
+import config.Config;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
@@ -172,6 +173,7 @@ public class Field {
 
     for (Animal animal : animalsCopy) {
 
+      // it can happen that the original "animals" set doesn't contain the current entity anymore (overridden by move)
       readLock.lock();
       var outdated = !animals.contains(animal);
       readLock.unlock();

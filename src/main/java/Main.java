@@ -3,7 +3,7 @@ import gui.MainWindow;
 import gui.SimulationCanvas;
 import gui.StatisticsPanel;
 import simulation.field.Field;
-import simulation.field.Config;
+import config.Config;
 import simulation.gameloop.GameLoop;
 import utils.LazyContainer;
 

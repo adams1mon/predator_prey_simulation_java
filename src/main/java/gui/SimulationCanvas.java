@@ -1,7 +1,7 @@
 package gui;
 
 import simulation.field.Field;
-import simulation.field.Config;
+import config.Config;
 import utils.LazyContainer;
 
 import javax.swing.*;
@@ -21,10 +21,6 @@ public class SimulationCanvas extends JPanel {
     setPreferredSize(new Dimension(canvasWidth, canvasHeight));
     setBounds(0, 0, canvasWidth, canvasHeight);
 
-  }
-
-  public Field getField() {
-    return field;
   }
 
   @Override
