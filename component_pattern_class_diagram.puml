@@ -18,13 +18,10 @@ Animal <.. PositionComponent
 
 class ObjectDrawingComponent
 DrawingComponent <|.. ObjectDrawingComponent
-'LazyContainer <.. ObjectDrawingComponent
-'Config <.. ObjectDrawingComponent
+
 
 class ObjectPositionComponent
 PositionComponent <|.. ObjectPositionComponent
-'LazyContainer <.. ObjectPositionComponent
-'Config <.. ObjectPositionComponent
 
 class RabbitMoveComponent
 MoveComponent <|.. RabbitMoveComponent
@@ -43,5 +40,10 @@ Animal <|-- Fox
 ObjectDrawingComponent <.. Fox
 FoxMoveComponent <.. Fox
 ObjectPositionComponent <.. Fox
+
+'LazyContainer <.. ObjectDrawingComponent
+'Config <.. ObjectDrawingComponent
+'LazyContainer <.. ObjectPositionComponent
+'Config <.. ObjectPositionComponent
 
 @enduml
