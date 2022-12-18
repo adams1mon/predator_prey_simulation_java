@@ -1,11 +1,12 @@
-package simulation;
+package simulation.gameloop;
 
 import gui.SimulationCanvas;
+import simulation.field.Config;
 import utils.LazyContainer;
 
 public class GameLoop {
 
-  private static final int UPDATE_MILLIS = 50;
+  private final int intervalMillis;
 
   private final SimulationCanvas canvas;
   private boolean running = false;
@@ -13,6 +14,8 @@ public class GameLoop {
 
   public GameLoop() {
     this.canvas = (SimulationCanvas) LazyContainer.getInstance(SimulationCanvas.class);
+    var config = (Config) LazyContainer.getInstance(Config.class);
+    intervalMillis = config.getGameLoopInterval();
   }
 
   public void start() {
@@ -23,7 +26,7 @@ public class GameLoop {
       while (running) {
         canvas.repaint();
         try {
-          Thread.sleep(UPDATE_MILLIS);
+          Thread.sleep(intervalMillis);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

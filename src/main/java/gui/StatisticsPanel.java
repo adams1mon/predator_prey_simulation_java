@@ -1,6 +1,6 @@
 package gui;
 
-import simulation.Field;
+import simulation.field.Field;
 import stats.Statistics;
 import utils.LazyContainer;
 

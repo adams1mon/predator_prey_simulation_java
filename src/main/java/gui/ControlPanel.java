@@ -1,7 +1,7 @@
 package gui;
 
-import simulation.Field;
-import simulation.GameLoop;
+import simulation.field.Field;
+import simulation.gameloop.GameLoop;
 import utils.LazyContainer;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ public class ControlPanel extends JPanel {
     addFoxesBtn.addActionListener(e -> field.addFoxes(spinnerValue));
     add(addFoxesBtn);
 
-    var toggleStopStartBtn = new JButton("Stop");
+    var toggleStopStartBtn = new JButton(gameLoop.isRunning() ? "Stop" : "Start");
     toggleStopStartBtn.addActionListener(e -> {
       if (gameLoop.isRunning()) {
         gameLoop.stop();

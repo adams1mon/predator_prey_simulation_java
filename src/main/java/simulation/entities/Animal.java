@@ -1,13 +1,12 @@
 package simulation.entities;
 
-import simulation.Field;
+import simulation.field.Field;
 import simulation.entities.components.DrawingComponent;
 import simulation.entities.components.MoveComponent;
 import simulation.entities.components.PositionComponent;
 import utils.Pair;
 
 import java.awt.*;
-import java.util.concurrent.Callable;
 
 public abstract class Animal {
 
@@ -64,7 +63,7 @@ public abstract class Animal {
   }
 
   public Pair<Integer, Integer> getNewPosition(Field field) {
-    return positionComponent.findNewPositionFromCurrent(this, field);
+    return positionComponent.findNewPositionFromCurrent(this);
   }
 
   public void loseEnergy(Field field) {}

@@ -1,6 +1,6 @@
 package simulation.entities.components.impl;
 
-import simulation.Field;
+import simulation.field.Field;
 import simulation.entities.Animal;
 import simulation.entities.components.MoveComponent;
 

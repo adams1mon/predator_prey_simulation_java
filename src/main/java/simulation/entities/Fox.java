@@ -1,6 +1,6 @@
 package simulation.entities;
 
-import simulation.Field;
+import simulation.field.Field;
 import simulation.entities.components.impl.FoxMoveComponent;
 import simulation.entities.components.impl.ObjectDrawingComponent;
 import simulation.entities.components.impl.ObjectPositionComponent;
@@ -52,11 +52,4 @@ public class Fox extends Animal {
       field.remove(x, y);
     }
   }
-
-//  @Override
-//  public Fox clone() {
-//    var fox = new Fox();
-//    fox.setPosition(x, y);
-//    return fox;
-//  }
 }

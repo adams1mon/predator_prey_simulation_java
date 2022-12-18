@@ -1,6 +1,6 @@
 package gui;
 
-import simulation.GameLoop;
+import simulation.gameloop.GameLoop;
 import utils.LazyContainer;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ public class MainWindow extends JFrame {
   public MainWindow(String title) {
     this.title = title;
     setupFrame();
-    startGameLoop();
+    initGameLoop();
   }
 
   private void setupFrame() {
@@ -56,8 +56,8 @@ public class MainWindow extends JFrame {
     add(statsPanel, constraints);
   }
 
-  private void startGameLoop() {
+  private void initGameLoop() {
     var gameLoop = (GameLoop) LazyContainer.getInstance(GameLoop.class);
-    gameLoop.start();
+    gameLoop.repaintOnce();
   }
 }

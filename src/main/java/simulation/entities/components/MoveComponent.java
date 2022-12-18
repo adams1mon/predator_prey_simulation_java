@@ -1,6 +1,6 @@
 package simulation.entities.components;
 
-import simulation.Field;
+import simulation.field.Field;
 import simulation.entities.Animal;
 
 public interface MoveComponent {

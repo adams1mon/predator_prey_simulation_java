@@ -1,8 +1,9 @@
-package simulation;
+package simulation.field;
 
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
+import utils.LazyContainer;
 
 import java.awt.*;
 import java.util.*;
@@ -22,21 +23,15 @@ public class Field {
   private final Lock readLock = gridLock.readLock();
   private final Lock writeLock = gridLock.writeLock();
 
-  public Field(int width, int height, int rabbitCount, int foxCount) {
-    this.width = width;
-    this.height = height;
+  public Field() {
+    var config = (Config) LazyContainer.getInstance(Config.class);
+
+    this.width = config.getWidth();
+    this.height = config.getHeight();
 
     createEmptyGrid();
-    addRabbits(rabbitCount);
-    addFoxes(foxCount);
-  }
-
-  public int getWidth() {
-    return width;
-  }
-
-  public int getHeight() {
-    return height;
+    addRabbits(config.getRabbitCount());
+    addFoxes(config.getFoxCount());
   }
 
   public Collection<Animal> getAnimals() {

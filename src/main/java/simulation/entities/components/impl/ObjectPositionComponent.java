@@ -1,8 +1,9 @@
 package simulation.entities.components.impl;
 
-import simulation.Field;
 import simulation.entities.Animal;
 import simulation.entities.components.PositionComponent;
+import simulation.field.Config;
+import utils.LazyContainer;
 import utils.Pair;
 
 import java.util.List;
@@ -18,12 +19,14 @@ public class ObjectPositionComponent implements PositionComponent {
   );
 
   @Override
-  public Pair<Integer, Integer> findNewPositionFromCurrent(Animal animal, Field field) {
+  public Pair<Integer, Integer> findNewPositionFromCurrent(Animal animal) {
     var random = new Random();
     var directionIndex = random.nextInt(DIRECTIONS.size());
 
-    var fieldWidth = field.getWidth();
-    var fieldHeight = field.getHeight();
+    var config = (Config) LazyContainer.getInstance(Config.class);
+
+    var fieldWidth = config.getWidth();
+    var fieldHeight = config.getHeight();
 
     var pos = animal.getPosition();
     var x = pos.getFirst();

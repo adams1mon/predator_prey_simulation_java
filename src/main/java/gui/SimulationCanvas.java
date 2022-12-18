@@ -1,6 +1,7 @@
 package gui;
 
-import simulation.Field;
+import simulation.field.Field;
+import simulation.field.Config;
 import utils.LazyContainer;
 
 import javax.swing.*;
@@ -8,14 +9,15 @@ import java.awt.*;
 
 public class SimulationCanvas extends JPanel {
 
-  public static final int CELL_SIZE = 10;
-
   private final Field field;
 
   public SimulationCanvas() {
     this.field = (Field) LazyContainer.getInstance(Field.class);
-    var canvasWidth = field.getWidth() * CELL_SIZE;
-    var canvasHeight = field.getHeight() * CELL_SIZE;
+    var config = (Config) LazyContainer.getInstance(Config.class);
+
+    var canvasWidth = config.getWidth() * config.getCellSize();
+    var canvasHeight = config.getHeight() * config.getCellSize();
+
     setPreferredSize(new Dimension(canvasWidth, canvasHeight));
     setBounds(0, 0, canvasWidth, canvasHeight);
 
