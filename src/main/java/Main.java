@@ -1,22 +1,17 @@
-import gui.ControlPanel;
-import gui.MainWindow;
-import gui.SimulationCanvas;
-import gui.StatisticsPanel;
-import simulation.field.Field;
-import config.Config;
-import simulation.gameloop.GameLoop;
-import utils.LazyContainer;
+import entities.GameObject;
+
+import java.awt.event.KeyEvent;
 
 public class Main {
+
   public static void main(String[] args) {
+    final var player = GameObject.createPlayer();
+    final var npc = GameObject.createNpc();
 
-    LazyContainer.register(new Config());
-    LazyContainer.register(new Field());
-    LazyContainer.register(new SimulationCanvas());
-    LazyContainer.register(new GameLoop());
-    LazyContainer.register(new ControlPanel());
-    LazyContainer.register(new StatisticsPanel());
+    System.out.println("Player Update:");
+    player.update(KeyEvent.KEY_LOCATION_LEFT);
 
-    new MainWindow("Something");
+    System.out.println("NPC Update:");
+    npc.demoUpdate();
   }
 }

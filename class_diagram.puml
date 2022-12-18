@@ -1,79 +1,36 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class LazyContainer
+interface InputComponent
+interface PhysicsComponent
+interface GraphicsComponent
 
-class MainWindow
-LazyContainer <.. MainWindow
 
-class ControlPanel
-LazyContainer <.. ControlPanel
-ControlPanel ..> Field
-ControlPanel ..> GameLoop
 
-class SimulationCanvas
-LazyContainer <.. SimulationCanvas
-Config <.. SimulationCanvas
-SimulationCanvas --> Field
+class DemoInputComponent
+InputComponent <|-- DemoInputComponent
 
-class StatisticsPanel
-LazyContainer <.. StatisticsPanel
-StatisticsPanel --> Statistics
+class DemoInputComponent
+InputComponent <|-- ObjectInputComponent
 
-class Statistics
-Statistics ..> Field
+class ObjectPhysicsComponent
+PhysicsComponent <|-- ObjectPhysicsComponent
 
-class GameLoop
-LazyContainer <.. GameLoop
-Config <.. GameLoop
-GameLoop --> SimulationCanvas
+class ObjectGraphicsComponent
+GraphicsComponent <|-- ObjectGraphicsComponent
 
-class Field
-LazyContainer <.. Field
-Field o-- Animal
+class GameObject
+GameObject --> InputComponent
+GameObject --> PhysicsComponent
+GameObject --> GraphicsComponent
 
-abstract class Animal
-Animal -- DrawingComponent
-Animal -- MoveComponent
-Animal -- PositionComponent
+GameObject ..> DemoInputComponent
+GameObject ..> ObjectInputComponent
+GameObject ..> ObjectPhysicsComponent
+GameObject ..> ObjectGraphicsComponent
 
-interface DrawingComponent
-Animal <.. DrawingComponent
-
-interface MoveComponent
-Animal <.. MoveComponent
-Field <.. MoveComponent
-
-interface PositionComponent
-Animal <.. PositionComponent
-
-class ObjectDrawingComponent
-DrawingComponent <|.. ObjectDrawingComponent
-LazyContainer <.. ObjectDrawingComponent
-Config <.. ObjectDrawingComponent
-
-class ObjectPositionComponent
-PositionComponent <|.. ObjectPositionComponent
-LazyContainer <.. ObjectPositionComponent
-Config <.. ObjectPositionComponent
-
-class RabbitMoveComponent
-MoveComponent <|.. RabbitMoveComponent
-
-class FoxMoveComponent
-MoveComponent <|.. FoxMoveComponent
-
-class Rabbit
-Animal <|-- Rabbit
-ObjectDrawingComponent <.. Rabbit
-RabbitMoveComponent <.. Rabbit
-ObjectPositionComponent <.. Rabbit
-
-class Fox
-Animal <|-- Fox
-ObjectDrawingComponent <.. Fox
-FoxMoveComponent <.. Fox
-ObjectPositionComponent <.. Fox
-
+GameObject <.. InputComponent
+GameObject <.. PhysicsComponent
+GameObject <.. GraphicsComponent
 
 @enduml
