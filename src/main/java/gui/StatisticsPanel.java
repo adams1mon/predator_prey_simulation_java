@@ -2,7 +2,7 @@ package gui;
 
 import simulation.field.Field;
 import stats.Statistics;
-import utils.LazyContainer;
+import utils.di.LazyContainer;
 
 import javax.swing.*;
 import java.awt.*;

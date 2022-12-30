@@ -2,7 +2,7 @@ package gui;
 
 import simulation.field.Field;
 import simulation.gameloop.GameLoop;
-import utils.LazyContainer;
+import utils.di.LazyContainer;
 
 import javax.swing.*;
 import java.awt.*;

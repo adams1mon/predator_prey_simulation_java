@@ -1,22 +1,27 @@
-import gui.ControlPanel;
-import gui.MainWindow;
-import gui.SimulationCanvas;
-import gui.StatisticsPanel;
-import simulation.field.Field;
-import config.Config;
-import simulation.gameloop.GameLoop;
-import utils.LazyContainer;
+import utils.di.LazyContainer;
+import utils.di.PackageScanner;
 
 public class Main {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 
-    LazyContainer.register(new Config());
-    LazyContainer.register(new Field());
-    LazyContainer.register(new SimulationCanvas());
-    LazyContainer.register(new GameLoop());
-    LazyContainer.register(new ControlPanel());
-    LazyContainer.register(new StatisticsPanel());
+    System.out.println(Main.class.getPackageName());
+    System.out.println(Main.class.getCanonicalName());
+    System.out.println("hellooo");
 
-    new MainWindow("Something");
+    var classes = PackageScanner.getComponentClasses();
+
+    classes.forEach(c -> System.out.println(c.getCanonicalName()));
+
+//    Arrays.stream(ClassLoader.getSystemClassLoader().getDefinedPackages())
+//        .forEach(System.out::println);
+
+//    register(new Config());
+//    register(new Field());
+//    register(new SimulationCanvas());
+//    register(new GameLoop());
+//    register(new ControlPanel());
+//    register(new StatisticsPanel());
+
+//    new MainWindow("Something");
   }
 }

@@ -4,7 +4,7 @@ import config.Config;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
-import utils.LazyContainer;
+import utils.di.LazyContainer;
 
 import java.awt.*;
 import java.util.*;

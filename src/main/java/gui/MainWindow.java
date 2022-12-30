@@ -1,7 +1,7 @@
 package gui;
 
 import simulation.gameloop.GameLoop;
-import utils.LazyContainer;
+import utils.di.LazyContainer;
 
 import javax.swing.*;
 import java.awt.*;

@@ -2,7 +2,7 @@ package simulation.gameloop;
 
 import gui.SimulationCanvas;
 import config.Config;
-import utils.LazyContainer;
+import utils.di.LazyContainer;
 
 public class GameLoop {
 
