@@ -3,7 +3,7 @@ package simulation.entities.components.impl;
 import simulation.entities.Animal;
 import simulation.entities.components.PositionComponent;
 import config.Config;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 import utils.Pair;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class ObjectPositionComponent implements PositionComponent {
     var random = new Random();
     var directionIndex = random.nextInt(DIRECTIONS.size());
 
-    var config = (Config) LazyContainer.getInstance(Config.class);
+    var config = (Config) DependencyContainer.getInstance(Config.class);
 
     var fieldWidth = config.getWidth();
     var fieldHeight = config.getHeight();

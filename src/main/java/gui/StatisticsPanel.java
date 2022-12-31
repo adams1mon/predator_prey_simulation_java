@@ -2,7 +2,7 @@ package gui;
 
 import simulation.field.Field;
 import stats.Statistics;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class StatisticsPanel extends JPanel {
   private final JLabel foxEnergyLabel = new JLabel();
 
   public StatisticsPanel() {
-    this.statistics = new Statistics((Field) LazyContainer.getInstance(Field.class));
+    this.statistics = new Statistics((Field) DependencyContainer.getInstance(Field.class));
 
     updateLabels();
     statistics.addChangeListener(this::updateLabels);

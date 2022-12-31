@@ -1,4 +1,5 @@
-import utils.di.LazyContainer;
+import org.slf4j.LoggerFactory;
+import utils.di.DependencyContainer;
 import utils.di.PackageScanner;
 
 public class Main {
@@ -8,9 +9,14 @@ public class Main {
     System.out.println(Main.class.getCanonicalName());
     System.out.println("hellooo");
 
-    var classes = PackageScanner.getComponentClasses();
+//    var classes = PackageScanner.getComponentClasses();
+//
+//    classes.forEach(c -> System.out.println(c.getCanonicalName()));
 
-    classes.forEach(c -> System.out.println(c.getCanonicalName()));
+
+    DependencyContainer.register(LoggerFactory.getLogger("default logger"));
+    DependencyContainer.initializeContext();
+
 
 //    Arrays.stream(ClassLoader.getSystemClassLoader().getDefinedPackages())
 //        .forEach(System.out::println);

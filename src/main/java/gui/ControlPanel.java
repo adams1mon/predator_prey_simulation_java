@@ -2,7 +2,7 @@ package gui;
 
 import simulation.field.Field;
 import simulation.gameloop.GameLoop;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,8 +13,8 @@ public class ControlPanel extends JPanel {
 
   public ControlPanel() {
 
-    var field = (Field) LazyContainer.getInstance(Field.class);
-    var gameLoop = (GameLoop) LazyContainer.getInstance(GameLoop.class);
+    var field = (Field) DependencyContainer.getInstance(Field.class);
+    var gameLoop = (GameLoop) DependencyContainer.getInstance(GameLoop.class);
 
     setLayout(new FlowLayout());
 

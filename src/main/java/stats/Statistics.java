@@ -8,7 +8,6 @@ import utils.di.annotations.Component;
 
 import java.util.LinkedList;
 
-@Component
 public class Statistics {
 
   public int foxCount = 0;

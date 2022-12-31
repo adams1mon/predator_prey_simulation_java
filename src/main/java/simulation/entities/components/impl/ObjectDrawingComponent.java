@@ -3,7 +3,7 @@ package simulation.entities.components.impl;
 import simulation.entities.Animal;
 import simulation.entities.components.DrawingComponent;
 import config.Config;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 import java.awt.*;
 
@@ -12,7 +12,7 @@ public class ObjectDrawingComponent implements DrawingComponent {
   private final int cellSize;
 
   public ObjectDrawingComponent() {
-    var config = (Config) LazyContainer.getInstance(Config.class);
+    var config = (Config) DependencyContainer.getInstance(Config.class);
     cellSize = config.getCellSize();
   }
 

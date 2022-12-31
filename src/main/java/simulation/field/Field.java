@@ -4,7 +4,7 @@ import config.Config;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 import java.awt.*;
 import java.util.*;
@@ -25,7 +25,7 @@ public class Field {
   private final Lock writeLock = gridLock.writeLock();
 
   public Field() {
-    var config = (Config) LazyContainer.getInstance(Config.class);
+    var config = (Config) DependencyContainer.getInstance(Config.class);
 
     this.width = config.getWidth();
     this.height = config.getHeight();

@@ -1,7 +1,7 @@
 package gui;
 
 import simulation.gameloop.GameLoop;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +31,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addCanvas() {
-    var canvas = (SimulationCanvas) LazyContainer.getInstance(SimulationCanvas.class);
+    var canvas = (SimulationCanvas) DependencyContainer.getInstance(SimulationCanvas.class);
     var constraints = new GridBagConstraints();
     constraints.gridx = 0;
     constraints.gridy = 0;
@@ -39,7 +39,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addControlPanel() {
-    var controlPanel = (ControlPanel) LazyContainer.getInstance(ControlPanel.class);
+    var controlPanel = (ControlPanel) DependencyContainer.getInstance(ControlPanel.class);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;
@@ -48,7 +48,7 @@ public class MainWindow extends JFrame {
   }
 
   private void addStatisticsPanel() {
-    var statsPanel = (StatisticsPanel) LazyContainer.getInstance(StatisticsPanel.class);
+    var statsPanel = (StatisticsPanel) DependencyContainer.getInstance(StatisticsPanel.class);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;
@@ -57,7 +57,7 @@ public class MainWindow extends JFrame {
   }
 
   private void initGameLoop() {
-    var gameLoop = (GameLoop) LazyContainer.getInstance(GameLoop.class);
+    var gameLoop = (GameLoop) DependencyContainer.getInstance(GameLoop.class);
     gameLoop.repaintOnce();
   }
 }

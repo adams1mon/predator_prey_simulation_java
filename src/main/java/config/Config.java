@@ -1,9 +1,14 @@
 package config;
 
+import utils.di.annotations.Autowired;
+import utils.di.annotations.Component;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
+@Component
 public class Config {
 
   public static final String PROP_WIDTH = "width";
@@ -12,6 +17,9 @@ public class Config {
   public static final String PROP_FOXES = "foxes";
   public static final String PROP_CELL_SIZE = "canvasCellSize";
   public static final String PROP_GAME_LOOP_INTERVAL_MILLIS = "gameLoopIntervalMillis";
+
+  @Autowired
+  private Logger log;
 
   private final Map<String, String> defaultProps = Map.ofEntries(
       Map.entry(PROP_WIDTH, "120"),

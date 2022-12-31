@@ -2,7 +2,7 @@ package gui;
 
 import simulation.field.Field;
 import config.Config;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +12,8 @@ public class SimulationCanvas extends JPanel {
   private final Field field;
 
   public SimulationCanvas() {
-    this.field = (Field) LazyContainer.getInstance(Field.class);
-    var config = (Config) LazyContainer.getInstance(Config.class);
+    this.field = (Field) DependencyContainer.getInstance(Field.class);
+    var config = (Config) DependencyContainer.getInstance(Config.class);
 
     var canvasWidth = config.getWidth() * config.getCellSize();
     var canvasHeight = config.getHeight() * config.getCellSize();

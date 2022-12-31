@@ -2,7 +2,7 @@ package simulation.gameloop;
 
 import gui.SimulationCanvas;
 import config.Config;
-import utils.di.LazyContainer;
+import utils.di.DependencyContainer;
 
 public class GameLoop {
 
@@ -13,8 +13,8 @@ public class GameLoop {
   private Thread thread;
 
   public GameLoop() {
-    this.canvas = (SimulationCanvas) LazyContainer.getInstance(SimulationCanvas.class);
-    var config = (Config) LazyContainer.getInstance(Config.class);
+    this.canvas = (SimulationCanvas) DependencyContainer.getInstance(SimulationCanvas.class);
+    var config = (Config) DependencyContainer.getInstance(Config.class);
     intervalMillis = config.getGameLoopInterval();
   }
 
