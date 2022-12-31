@@ -6,7 +6,6 @@ import utils.di.annotations.Component;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 @Component
 public class Config {
@@ -19,7 +18,7 @@ public class Config {
   public static final String PROP_GAME_LOOP_INTERVAL_MILLIS = "gameLoopIntervalMillis";
 
   @Autowired
-  private Logger log;
+  private ch.qos.logback.classic.Logger log;
 
   private final Map<String, String> defaultProps = Map.ofEntries(
       Map.entry(PROP_WIDTH, "120"),

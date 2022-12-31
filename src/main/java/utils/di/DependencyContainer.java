@@ -16,37 +16,37 @@ import java.util.stream.Collectors;
 public class DependencyContainer {
 
   private static final Logger log = LoggerFactory.getLogger(DependencyContainer.class);
-  private static final HashMap<Class<?>, Object> objects = new HashMap<>();
+  private static final HashMap<Class<?>, Object> container = new HashMap<>();
 
   public static void register(Object obj) {
-    if(!objects.containsKey(obj.getClass())) {
+    if(!container.containsKey(obj.getClass())) {
       log.info("registering {} instance", obj.getClass().getName());
-      objects.put(obj.getClass(), obj);
+      container.put(obj.getClass(), obj);
     }
   }
 
   public static Object getInstance(Class<?> clazz) {
-    if (!objects.containsKey(clazz)) {
+    if (!container.containsKey(clazz)) {
       throw new RuntimeException(clazz.getName() + " instance does not exist in the container");
     }
-    return objects.get(clazz);
+    return container.get(clazz);
   }
 
   public static void initializeContext() {
     log.info("initializing context");
-    objects.putAll(initializeClasses());
-    resolveDependencies(objects);
+    container.putAll(initializeClasses());
+    resolveDependencies(container);
   }
 
   private static HashMap<Class<?>, Object> initializeClasses() {
     log.info("initializing classes");
-    var objects = new HashMap<Class<?>, Object>();
+    var container = new HashMap<Class<?>, Object>();
     getComponentClasses(PackageScanner.getClasses())
         .forEach(clazz -> {
-          if (!objects.containsKey(clazz)) {
+          if (!container.containsKey(clazz)) {
             try {
               var constructor = clazz.getConstructor();
-              objects.put(clazz, constructor.newInstance());
+              container.put(clazz, constructor.newInstance());
             } catch (NoSuchMethodException e) {
               log.error(
                   "class {} doesn't have a public default constructor, skipping initialization: ",
@@ -59,7 +59,7 @@ public class DependencyContainer {
             }
           }
         });
-    return objects;
+    return container;
   }
 
   private static List<Class<?>> getComponentClasses(Collection<Class<?>> classes) {
@@ -68,15 +68,18 @@ public class DependencyContainer {
 
   private static void resolveDependencies(HashMap<Class<?>, Object> objects) {
     log.info("resolving dependencies (class fields)");
-    getAutowiredClassFields(objects.keySet())
+    getAutowiredClassFields(objects.values())
         .forEach(pair -> {
           var field = pair.getFirst();
-          var clazz = pair.getSecond();
+          var instance = pair.getSecond();
+          var clazz = instance.getClass();
             if (objects.containsKey(field.getType())) {
               field.setAccessible(true);
               try {
                 log.info("setting field {} of class {}", field.getName(), clazz.getName());
-                field.set(clazz, objects.get(field.getType()));
+
+                field.set(instance, objects.get(field.getType()));
+
               } catch (IllegalAccessException e) {
                 log.error("error while trying to set field {} of class {}", field.getName(), clazz.getName());
                 e.printStackTrace();
@@ -87,14 +90,14 @@ public class DependencyContainer {
           });
   }
 
-  private static Collection<Pair<Field, Class<?>>> getAutowiredClassFields(Collection<Class<?>> classes) {
-    var fields = new LinkedList<Pair<Field, Class<?>>>();
-    classes.forEach(clazz ->
+  private static Collection<Pair<Field, Object>> getAutowiredClassFields(Collection<Object> instances) {
+    var fields = new LinkedList<Pair<Field, Object>>();
+    instances.forEach(instance ->
         filterByAnnotation(
-            List.of(clazz.getDeclaredFields()),
+            List.of(instance.getClass().getDeclaredFields()),
             Autowired.class
         )
-          .forEach(field -> fields.add(new Pair<>(field, clazz)))
+          .forEach(field -> fields.add(new Pair<>(field, instance)))
     );
     return fields;
   }
