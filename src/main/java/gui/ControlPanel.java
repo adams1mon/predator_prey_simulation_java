@@ -3,18 +3,20 @@ package gui;
 import simulation.field.Field;
 import simulation.gameloop.GameLoop;
 import utils.di.DependencyContainer;
+import utils.di.annotations.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Component
 public class ControlPanel extends JPanel {
 
   private int spinnerValue = 20;
 
-  public ControlPanel() {
+  public ControlPanel(Field field, GameLoop gameLoop) {
 
-    var field = (Field) DependencyContainer.getInstance(Field.class);
-    var gameLoop = (GameLoop) DependencyContainer.getInstance(GameLoop.class);
+//    var field = (Field) DependencyContainer.getInstance(Field.class);
+//    var gameLoop = (GameLoop) DependencyContainer.getInstance(GameLoop.class);
 
     setLayout(new FlowLayout());
 

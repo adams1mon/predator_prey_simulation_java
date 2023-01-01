@@ -3,6 +3,7 @@ package gui;
 import simulation.field.Field;
 import stats.Statistics;
 import utils.di.DependencyContainer;
+import utils.di.annotations.Component;
 
 import javax.swing.*;
 import java.awt.*;

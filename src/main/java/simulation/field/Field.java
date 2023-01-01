@@ -5,6 +5,7 @@ import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
 import utils.di.DependencyContainer;
+import utils.di.annotations.Component;
 
 import java.awt.*;
 import java.util.*;

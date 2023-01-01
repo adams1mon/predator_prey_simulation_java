@@ -2,12 +2,10 @@ package utils.di;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.di.annotations.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,10 +28,6 @@ public class PackageScanner {
       System.exit(1);
     }
   }
-
-//  public static Set<Class<?>> getComponentClasses() {
-//    return filterClassesByAnnotation(classes, Component.class);
-//  }
 
   private static List<File> findResourceDirectories(String packageName) throws IOException {
     String path = packageName.replace('.', '/');
@@ -114,26 +108,4 @@ public class PackageScanner {
   public static Set<Class<?>> getClasses() {
     return classes;
   }
-
-  // find component classes
-  // find factory methods in these classes
-  // find autowired fields in these classes
-  // instantiate fields using the factory methods
-
-//  private static List<Method> findAnnotatedMethods(
-//      Set<Class<?>> classes,
-//      Class<? extends Annotation> annotation
-//  ) {
-//    var methods = new LinkedList<Method>();
-//    classes.forEach(clazz ->
-//        methods.addAll(
-//            Arrays.stream(clazz.getDeclaredMethods())
-//                .filter(method -> method.isAnnotationPresent(annotation))
-//                .collect(Collectors.toList())
-//        )
-//    );
-//    return methods;
-//  }
-
-
 }

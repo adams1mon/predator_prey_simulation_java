@@ -3,6 +3,7 @@ package gui;
 import simulation.field.Field;
 import config.Config;
 import utils.di.DependencyContainer;
+import utils.di.annotations.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +21,6 @@ public class SimulationCanvas extends JPanel {
 
     setPreferredSize(new Dimension(canvasWidth, canvasHeight));
     setBounds(0, 0, canvasWidth, canvasHeight);
-
   }
 
   @Override
