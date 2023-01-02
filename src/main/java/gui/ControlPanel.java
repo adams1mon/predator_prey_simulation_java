@@ -1,9 +1,9 @@
 package gui;
 
-import simulation.field.Field;
-import simulation.gameloop.GameLoop;
 import di.annotations.Autowired;
 import di.annotations.Component;
+import simulation.field.Field;
+import simulation.gameloop.GameLoop;
 
 import javax.swing.*;
 import java.awt.*;

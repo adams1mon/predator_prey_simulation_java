@@ -1,9 +1,9 @@
 package gui;
 
-import simulation.field.Field;
 import config.Config;
 import di.annotations.Autowired;
 import di.annotations.Component;
+import simulation.field.Field;
 
 import javax.swing.*;
 import java.awt.*;

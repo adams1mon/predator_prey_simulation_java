@@ -1,8 +1,8 @@
 package simulation.entities.components.impl;
 
-import simulation.field.Field;
 import simulation.entities.Animal;
 import simulation.entities.components.MoveComponent;
+import simulation.field.Field;
 
 public class RabbitMoveComponent implements MoveComponent {
   @Override

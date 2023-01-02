@@ -1,22 +1,14 @@
 package gui;
 
-import simulation.gameloop.GameLoop;
 import di.annotations.Autowired;
 import di.annotations.Component;
+import simulation.gameloop.GameLoop;
 
 import javax.swing.*;
 import java.awt.*;
 
 @Component
 public class MainWindow extends JFrame {
-
-  private final String title;
-
-//  public MainWindow(String title) {
-//    this.title = title;
-//    setupFrame();
-//    initGameLoop();
-//  }
 
   @Autowired
   public MainWindow(
@@ -25,17 +17,15 @@ public class MainWindow extends JFrame {
       StatisticsPanel statisticsPanel,
       GameLoop gameLoop
   ) {
-
-    this.title = "default title";
-    setupFrame(canvas, controlPanel, statisticsPanel, gameLoop);
+    setupFrame("default title", canvas, controlPanel, statisticsPanel);
     initGameLoop(gameLoop);
   }
 
   private void setupFrame(
+      String title,
       SimulationCanvas canvas,
       ControlPanel controlPanel,
-      StatisticsPanel statisticsPanel,
-      GameLoop gameLoop
+      StatisticsPanel statisticsPanel
   ) {
     setTitle(title);
     setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -1,9 +1,9 @@
 package stats;
 
-import simulation.field.Field;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
+import simulation.field.Field;
 
 import java.util.LinkedList;
 

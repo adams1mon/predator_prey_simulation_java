@@ -1,14 +1,17 @@
 package simulation.field;
 
 import config.Config;
+import di.annotations.Autowired;
+import di.annotations.Component;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
-import di.annotations.Autowired;
-import di.annotations.Component;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

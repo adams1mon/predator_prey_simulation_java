@@ -1,9 +1,9 @@
 package simulation.gameloop;
 
-import gui.SimulationCanvas;
 import config.Config;
 import di.annotations.Autowired;
 import di.annotations.Component;
+import gui.SimulationCanvas;
 
 @Component
 public class GameLoop {

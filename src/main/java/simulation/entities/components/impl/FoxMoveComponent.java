@@ -1,9 +1,9 @@
 package simulation.entities.components.impl;
 
-import simulation.field.Field;
 import simulation.entities.Animal;
 import simulation.entities.Rabbit;
 import simulation.entities.components.MoveComponent;
+import simulation.field.Field;
 
 import static simulation.entities.Fox.ENERGY_PER_RABBIT;
 

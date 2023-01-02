@@ -1,9 +1,9 @@
 package simulation.entities;
 
-import simulation.field.Field;
 import simulation.entities.components.DrawingComponent;
 import simulation.entities.components.MoveComponent;
 import simulation.entities.components.PositionComponent;
+import simulation.field.Field;
 import utils.Pair;
 
 import java.awt.*;

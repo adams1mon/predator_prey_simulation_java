@@ -1,9 +1,9 @@
 package simulation.entities.components.impl;
 
-import simulation.entities.Animal;
-import simulation.entities.components.PositionComponent;
 import config.Config;
 import di.DependencyContainer;
+import simulation.entities.Animal;
+import simulation.entities.components.PositionComponent;
 import utils.Pair;
 
 import java.util.List;

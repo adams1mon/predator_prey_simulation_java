@@ -1,11 +1,11 @@
 package di;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import di.graph.Graph;
 import di.graph.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
