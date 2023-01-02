@@ -1,6 +1,7 @@
 package di;
 
 import di.annotations.Autowired;
+import di.annotations.Bean;
 import di.annotations.Component;
 import di.graph.Graph;
 import di.graph.Node;
@@ -8,13 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DependencyContainer {
@@ -48,9 +44,15 @@ public class DependencyContainer {
     log.info("initializing dependency graph");
 
     var graph = new Graph<Class<?>>();
-    var nodes = new HashMap<Class<?>, Node<Class<?>>>();
 
-    classes.forEach(clazz -> nodes.put(clazz, new Node<>(clazz)));
+    var nodes = new HashMap<Class<?>, Node<Class<?>>>();
+    var beanMethodReturnTypes = new HashMap<Class<?>, Node<Class<?>>>();
+
+    classes.forEach(clazz -> {
+      var node = new Node<Class<?>>(clazz);
+      nodes.put(clazz, node);
+      getBeanMethods(clazz).forEach(method -> beanMethodReturnTypes.put(method.getReturnType(), node));
+    });
 
     // discover dependencies
     nodes.forEach((clazz, node) -> {
@@ -58,6 +60,12 @@ public class DependencyContainer {
       for (var param : constructor.getParameters()) {
         var paramType = param.getType();
         var className = clazz.getName();
+
+        if (beanMethodReturnTypes.containsKey(paramType)) {
+          log.info("registering dependency {} of {} (from @Bean method)", paramType, className);
+          graph.addEdge(nodes.get(clazz), beanMethodReturnTypes.get(paramType));
+          continue;
+        }
 
         if (nodes.containsKey(paramType)) {
           log.info("registering dependency {} of {}", paramType, className);
@@ -70,15 +78,20 @@ public class DependencyContainer {
           continue;
         }
 
-        throw new RuntimeException("dependency " + paramType + " of class " + className +
-            " could not be satisfied (not annotated - class with @Component and constructor with @Autowired -" +
-            " and not registered manually either)");
+        log.info("dependency {} of class {} should be registered manually via a @Bean method " +
+                "(or via a register() call before calling initializeContext() - not recommended, " +
+                "would overwrite @Bean methods)",
+            paramType,
+            className
+        );
       }
     });
     return graph;
   }
 
-  // tries to instantiate the objects in reverse topological order of dependencies
+  /**
+   * tries to instantiate the objects in reverse topological order of dependencies
+   */
   private static void instantiateDependencies(Graph<Class<?>> graph) {
     log.info("instantiating dependencies according to the dependency graph");
 
@@ -86,18 +99,45 @@ public class DependencyContainer {
         .forEach(node -> {
           var clazz = node.getContent();
 
+          // instances can be registered manually or by @Bean methods beforehand,
+          // so we ignore classes that have already been instantiated
           if (!container.containsKey(clazz)) {
-            var constructor = getAutowiredConstructor(clazz);
-            var args = createFunctionArgumentList(constructor);
-
             try {
-              log.info("instantiating {}, constructor {}", clazz.getName(), constructor);
-              container.put(clazz, constructor.newInstance(args));
+              var instance = instantiateClass(clazz);
+              container.put(clazz, instance);
+              container.putAll(invokeBeanMethods(instance));
             }  catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
               throw new RuntimeException("error while initializing class " + clazz.getName());
             }
           }
         });
+  }
+
+  private static Object instantiateClass(Class<?> clazz)
+      throws InvocationTargetException, InstantiationException, IllegalAccessException
+  {
+    var constructor = getAutowiredConstructor(clazz);
+    var args = createFunctionArgumentList(constructor);
+    log.info("instantiating {}, constructor {}", clazz.getName(), constructor);
+    return constructor.newInstance(args);
+  }
+
+  /**
+   * creates objects from the defined bean methods in a class
+   * bean methods can not have any parameters as of now.
+   * it would be nicer to create the dependency graph using the bean method parameters too,
+   * but that would complicate things and currently those dependencies can be declared as
+   * class fields and injected via the @Autowired constructor, which also configures the dependency graph
+   */
+  private static Map<Class<?>, Object> invokeBeanMethods(Object instance)
+      throws InvocationTargetException, IllegalAccessException
+  {
+    var beanObjects = new HashMap<Class<?>, Object>();
+    for (var method : getBeanMethods(instance.getClass())) {
+      log.info("invoking @Bean method {} of class {}", method.getName(), instance.getClass().getName());
+      beanObjects.put(method.getReturnType(), method.invoke(instance));
+    }
+    return beanObjects;
   }
 
   private static Object[] createFunctionArgumentList(Executable function) {
@@ -110,7 +150,7 @@ public class DependencyContainer {
         throw new RuntimeException("constructor parameter " + params[i].getType() +
             " of class " + function.getDeclaringClass().getName() + " has not been instantiated: " +
             "not annotated with @Component and doesn't have an @Autowired constructor and " +
-            "was also not registered manually");
+            "was also not registered by a @Bean method or manually");
       }
 
       args[i] = container.get(params[i].getType());
@@ -118,45 +158,13 @@ public class DependencyContainer {
     return args;
   }
 
+  private static List<Method> getBeanMethods(Class<?> clazz) {
+    return filterByAnnotation(List.of(clazz.getDeclaredMethods()), Bean.class);
+  }
+
   private static List<Class<?>> getComponentClasses(Collection<Class<?>> classes) {
     return filterByAnnotation(classes, Component.class);
   }
-//
-//  private static void resolveDependencies(HashMap<Class<?>, Object> objects) {
-//    log.info("resolving dependencies (class fields)");
-//    getAutowiredClassFields(objects.values())
-//        .forEach(pair -> {
-//          var field = pair.getFirst();
-//          var instance = pair.getSecond();
-//          var clazz = instance.getClass();
-//            if (objects.containsKey(field.getType())) {
-//              field.setAccessible(true);
-//              try {
-//                log.info("setting field {} of class {}", field.getName(), clazz.getName());
-//
-//                field.set(instance, objects.get(field.getType()));
-//
-//              } catch (IllegalAccessException e) {
-//                log.error("error while trying to set field {} of class {}", field.getName(), clazz.getName());
-//                e.printStackTrace();
-//              }
-//            } else {
-//              log.info("autowired field {} {} of class {} not found", field.getType(), field.getName(), clazz.getName());
-//            }
-//          });
-//  }
-//
-//  private static Collection<Pair<Field, Object>> getAutowiredClassFields(Collection<Object> instances) {
-//    var fields = new LinkedList<Pair<Field, Object>>();
-//    instances.forEach(instance ->
-//        filterByAnnotation(
-//            List.of(instance.getClass().getDeclaredFields()),
-//            Autowired.class
-//        )
-//          .forEach(field -> fields.add(new Pair<>(field, instance)))
-//    );
-//    return fields;
-//  }
 
   private static Constructor<?> getAutowiredConstructor(Class<?> clazz) {
     var autowiredConstructors = filterByAnnotation(List.of(clazz.getConstructors()), Autowired.class);

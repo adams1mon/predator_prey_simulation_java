@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-@Component
 public class Config {
 
   public static final String PROP_WIDTH = "width";
@@ -33,7 +32,6 @@ public class Config {
   private final Properties properties = new Properties();
   public static String CONFIG_FILE = "field_config.properties";
 
-  @Autowired
   public Config() {
     try {
       loadDefaults();
