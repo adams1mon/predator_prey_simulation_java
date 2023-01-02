@@ -4,7 +4,6 @@ import simulation.field.Field;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
-import utils.di.annotations.Component;
 
 import java.util.LinkedList;
 

@@ -2,12 +2,13 @@ package gui;
 
 import simulation.field.Field;
 import stats.Statistics;
-import utils.di.DependencyContainer;
-import utils.di.annotations.Component;
+import di.annotations.Autowired;
+import di.annotations.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Component
 public class StatisticsPanel extends JPanel {
 
   private final Statistics statistics;
@@ -17,8 +18,10 @@ public class StatisticsPanel extends JPanel {
   private final JLabel rabbitCountLabel = new JLabel();
   private final JLabel foxEnergyLabel = new JLabel();
 
-  public StatisticsPanel() {
-    this.statistics = new Statistics((Field) DependencyContainer.getInstance(Field.class));
+  @Autowired
+  public StatisticsPanel(Field field) {
+//    this.statistics = new Statistics((Field) DependencyContainer.getInstance(Field.class));
+    this.statistics = new Statistics(field);
 
     updateLabels();
     statistics.addChangeListener(this::updateLabels);

@@ -3,7 +3,7 @@ package simulation.entities.components.impl;
 import simulation.entities.Animal;
 import simulation.entities.components.DrawingComponent;
 import config.Config;
-import utils.di.DependencyContainer;
+import di.DependencyContainer;
 
 import java.awt.*;
 

@@ -1,7 +1,9 @@
 package config;
 
-import utils.di.annotations.Autowired;
-import utils.di.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import di.annotations.Autowired;
+import di.annotations.Component;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,8 +19,7 @@ public class Config {
   public static final String PROP_CELL_SIZE = "canvasCellSize";
   public static final String PROP_GAME_LOOP_INTERVAL_MILLIS = "gameLoopIntervalMillis";
 
-  @Autowired
-  private ch.qos.logback.classic.Logger log;
+  private static final Logger log = LoggerFactory.getLogger(Config.class);
 
   private final Map<String, String> defaultProps = Map.ofEntries(
       Map.entry(PROP_WIDTH, "120"),
@@ -31,17 +32,19 @@ public class Config {
   private final Properties properties = new Properties();
   public static String CONFIG_FILE = "field_config.properties";
 
+  @Autowired
   public Config() {
     try {
       loadDefaults();
       properties.load(new FileInputStream(CONFIG_FILE));
     } catch (IOException e) {
       e.printStackTrace();
-      System.err.println(CONFIG_FILE + " file could not be read!");
+      log.error("{} file could not be read", CONFIG_FILE);
     }
   }
 
   private void loadDefaults() {
+    log.info("loading default config");
     defaultProps.forEach(properties::setProperty);
   }
 

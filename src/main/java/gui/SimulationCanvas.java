@@ -2,19 +2,23 @@ package gui;
 
 import simulation.field.Field;
 import config.Config;
-import utils.di.DependencyContainer;
-import utils.di.annotations.Component;
+import di.annotations.Autowired;
+import di.annotations.Component;
 
 import javax.swing.*;
 import java.awt.*;
 
+@Component
 public class SimulationCanvas extends JPanel {
 
   private final Field field;
 
-  public SimulationCanvas() {
-    this.field = (Field) DependencyContainer.getInstance(Field.class);
-    var config = (Config) DependencyContainer.getInstance(Config.class);
+  @Autowired
+  public SimulationCanvas(Config config, Field field) {
+    this.field = field;
+
+//    this.field = (Field) DependencyContainer.getInstance(Field.class);
+//    var config = (Config) DependencyContainer.getInstance(Config.class);
 
     var canvasWidth = config.getWidth() * config.getCellSize();
     var canvasHeight = config.getHeight() * config.getCellSize();

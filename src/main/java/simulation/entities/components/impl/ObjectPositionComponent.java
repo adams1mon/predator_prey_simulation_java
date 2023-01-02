@@ -3,7 +3,7 @@ package simulation.entities.components.impl;
 import simulation.entities.Animal;
 import simulation.entities.components.PositionComponent;
 import config.Config;
-import utils.di.DependencyContainer;
+import di.DependencyContainer;
 import utils.Pair;
 
 import java.util.List;

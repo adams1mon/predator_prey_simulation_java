@@ -1,4 +1,4 @@
-package utils.graph;
+package di.graph;
 
 public class GraphCycleException extends RuntimeException {
 }

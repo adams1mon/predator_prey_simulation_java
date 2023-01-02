@@ -4,8 +4,8 @@ import config.Config;
 import simulation.entities.Animal;
 import simulation.entities.Fox;
 import simulation.entities.Rabbit;
-import utils.di.DependencyContainer;
-import utils.di.annotations.Component;
+import di.annotations.Autowired;
+import di.annotations.Component;
 
 import java.awt.*;
 import java.util.*;
@@ -13,6 +13,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+@Component
 public class Field {
 
   private final int width;
@@ -25,8 +26,9 @@ public class Field {
   private final Lock readLock = gridLock.readLock();
   private final Lock writeLock = gridLock.writeLock();
 
-  public Field() {
-    var config = (Config) DependencyContainer.getInstance(Config.class);
+  @Autowired
+  public Field(Config config) {
+//    var config = (Config) DependencyContainer.getInstance(Config.class);
 
     this.width = config.getWidth();
     this.height = config.getHeight();

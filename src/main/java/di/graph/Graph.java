@@ -1,6 +1,8 @@
-package utils.graph;
+package di.graph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Graph<T> {
 
@@ -10,10 +12,6 @@ public class Graph<T> {
         if (!nodes.containsKey(node)) {
             nodes.put(node, new ArrayList<>());
         }
-    }
-
-    public List<Node<T>> getNeighbours(Node<T> node) {
-        return nodes.get(node);
     }
 
     public void addEdge(Node<T> from, Node<T> to) {
@@ -31,7 +29,6 @@ public class Graph<T> {
     }
 
     public List<Node<T>> getReverseTopologicalOrder() {
-        System.out.println(nodes);
         var topologicalOrder = new ArrayList<Node<T>>();
         dfs(topologicalOrder);
         return topologicalOrder;
@@ -40,7 +37,7 @@ public class Graph<T> {
     // entry dfs call
     private void dfs(List<Node<T>> topologicalOrder) {
         for (var startNode : nodes.keySet()) {
-            if (startNode.notDoneVisiting()) {
+            if (startNode.getStatus() != NodeStatus.DONE_VISITING) {
                 dfs(startNode, topologicalOrder);
             }
         }
@@ -48,20 +45,18 @@ public class Graph<T> {
 
     // recursive dfs call
     private void dfs(Node<T> node, List<Node<T>> topologicalOrder) {
-        node.visit();
-        System.out.println("visiting " + node);
+        node.setStatus(NodeStatus.VISITED);
         for (var neighbour : nodes.get(node)) {
-            if (neighbour.notDoneVisiting()) {
+            if (neighbour.getStatus() == NodeStatus.NOT_VISITED) {
                 dfs(neighbour, topologicalOrder);
-            } else if (neighbour.isVisited()) {
+            } else if (neighbour.getStatus() == NodeStatus.VISITED) {
                 // cycle found
                 throw new GraphCycleException();
             }
         }
 
         // mark the node as done visited, to not include it when cycles are checked
-        node.doneVisiting();
-        System.out.println("done visiting " + node);
+        node.setStatus(NodeStatus.DONE_VISITING);
         topologicalOrder.add(node);
     }
 }

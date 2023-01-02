@@ -2,8 +2,8 @@ package gui;
 
 import simulation.field.Field;
 import simulation.gameloop.GameLoop;
-import utils.di.DependencyContainer;
-import utils.di.annotations.Component;
+import di.annotations.Autowired;
+import di.annotations.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +13,7 @@ public class ControlPanel extends JPanel {
 
   private int spinnerValue = 20;
 
+  @Autowired
   public ControlPanel(Field field, GameLoop gameLoop) {
 
 //    var field = (Field) DependencyContainer.getInstance(Field.class);

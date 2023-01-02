@@ -1,19 +1,20 @@
-package utils.di;
+package di;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.Pair;
-import utils.di.annotations.Autowired;
-import utils.di.annotations.Component;
-import utils.graph.Graph;
-import utils.graph.Node;
+import di.annotations.Autowired;
+import di.annotations.Component;
+import di.graph.Graph;
+import di.graph.Node;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class DependencyContainer {
@@ -37,66 +38,84 @@ public class DependencyContainer {
 
   public static void initializeContext() {
     log.info("initializing context");
-    container.putAll(initializeClasses());
-//    resolveDependencies(container);
+    var allClasses = PackageScanner.getClasses();
+    var classes = getComponentClasses(allClasses);
+    var graph = initializeDependencyGraph(classes);
+    instantiateDependencies(graph);
   }
 
-
-
-  private static HashMap<Class<?>, Object> initializeClasses() {
-    log.info("initializing classes");
-    var container = new HashMap<Class<?>, Object>();
-    var classes = getComponentClasses(PackageScanner.getClasses());
+  private static Graph<Class<?>> initializeDependencyGraph(Collection<Class<?>> classes) {
+    log.info("initializing dependency graph");
 
     var graph = new Graph<Class<?>>();
     var nodes = new HashMap<Class<?>, Node<Class<?>>>();
 
-    classes.forEach(clazz -> {
-      nodes.put(clazz, new Node<>(clazz));
-    });
+    classes.forEach(clazz -> nodes.put(clazz, new Node<>(clazz)));
 
+    // discover dependencies
     nodes.forEach((clazz, node) -> {
       var constructor = getAutowiredConstructor(clazz);
       for (var param : constructor.getParameters()) {
-        if (!nodes.containsKey(param.getType())) {
-          throw new RuntimeException("dependency " + param.getType() + " of class " + clazz.getName() +
-                  " could not be satisfied (maybe not annotated with Component?");
+        var paramType = param.getType();
+        var className = clazz.getName();
+
+        if (nodes.containsKey(paramType)) {
+          log.info("registering dependency {} of {}", paramType, className);
+          graph.addEdge(nodes.get(clazz), nodes.get(paramType));
+          continue;
         }
-        graph.addEdge(nodes.get(clazz), nodes.get(param.getType()));
+
+        if (container.containsKey(paramType)) {
+          log.info("dependency {} of class {} found, has been registered manually", paramType, className);
+          continue;
+        }
+
+        throw new RuntimeException("dependency " + paramType + " of class " + className +
+            " could not be satisfied (not annotated - class with @Component and constructor with @Autowired -" +
+            " and not registered manually either)");
       }
     });
+    return graph;
+  }
+
+  // tries to instantiate the objects in reverse topological order of dependencies
+  private static void instantiateDependencies(Graph<Class<?>> graph) {
+    log.info("instantiating dependencies according to the dependency graph");
 
     graph.getReverseTopologicalOrder()
-            .forEach(node -> {
-              // get the node's dependencies from the already initialized objects
-              var args = new ArrayList<Class<?>>();
-              graph.getNeighbours(node)
-                      .forEach(neighbour -> {
+        .forEach(node -> {
+          var clazz = node.getContent();
 
-                      });
-            });
-
-    classes
-        .forEach(clazz -> {
           if (!container.containsKey(clazz)) {
+            var constructor = getAutowiredConstructor(clazz);
+            var args = createFunctionArgumentList(constructor);
+
             try {
-
-              var constructor = getAutowiredConstructor(clazz);
-              Arrays.stream(constructor.getParameters())
-                              .forEach(parameter -> {
-
-                              });
-
-
-              container.put(clazz, constructor.newInstance());
-
-            } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-              log.error("error when trying to instantiate class {}", clazz.getName());
+              log.info("instantiating {}, constructor {}", clazz.getName(), constructor);
+              container.put(clazz, constructor.newInstance(args));
+            }  catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
               throw new RuntimeException("error while initializing class " + clazz.getName());
             }
           }
         });
-    return container;
+  }
+
+  private static Object[] createFunctionArgumentList(Executable function) {
+    var params = function.getParameters();
+    var args = new Object[params.length];
+    for (var i = 0; i < params.length; ++i) {
+
+      // look in the global container
+      if (!container.containsKey(params[i].getType())) {
+        throw new RuntimeException("constructor parameter " + params[i].getType() +
+            " of class " + function.getDeclaringClass().getName() + " has not been instantiated: " +
+            "not annotated with @Component and doesn't have an @Autowired constructor and " +
+            "was also not registered manually");
+      }
+
+      args[i] = container.get(params[i].getType());
+    }
+    return args;
   }
 
   private static List<Class<?>> getComponentClasses(Collection<Class<?>> classes) {
@@ -142,11 +161,7 @@ public class DependencyContainer {
   private static Constructor<?> getAutowiredConstructor(Class<?> clazz) {
     var autowiredConstructors = filterByAnnotation(List.of(clazz.getConstructors()), Autowired.class);
     if (autowiredConstructors.isEmpty()) {
-      log.error(
-              "class {} doesn't have a public default constructor, skipping initialization: ",
-              clazz.getName()
-      );
-      throw new RuntimeException(clazz.getName() + " doesn't have an 'Autowired' annotated constructor");
+      throw new RuntimeException(clazz.getName() + " doesn't have an @Autowired annotated constructor");
     }
     return autowiredConstructors.get(0);
   }
@@ -159,9 +174,4 @@ public class DependencyContainer {
         .filter(element -> element.isAnnotationPresent(annotation))
         .collect(Collectors.toList());
   }
-
-  // 1. discover classes in classpath
-  // 2. go through the annotated fields and build a dependency graph
-  // 3. create topological order in the graph, signal cycles !!!
-  // 4. instantiate the objects in topological order, injecting any dependencies in subsequent nodes..
 }

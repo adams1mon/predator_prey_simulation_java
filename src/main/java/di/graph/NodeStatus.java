@@ -1,4 +1,4 @@
-package utils.graph;
+package di.graph;
 
 public enum NodeStatus {
     NOT_VISITED(0),
