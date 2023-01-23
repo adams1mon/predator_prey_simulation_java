@@ -1,8 +1,6 @@
 package stats;
 
-import simulation.entities.Animal;
-import simulation.entities.Fox;
-import simulation.entities.Rabbit;
+import simulation.entities.*;
 import simulation.field.Field;
 
 import java.util.LinkedList;
@@ -11,10 +9,12 @@ public class Statistics {
 
   public int foxCount = 0;
   public int rabbitCount = 0;
+  public int foodCount = 0;
   public int populationCount = 0;
 
   public double foxPercentage = 0.0;
   public double rabbitPercentage = 0.0;
+  public double foodPercentage = 0.0;
 
   public double foxAvgEnergy = 0.0;
 
@@ -36,23 +36,30 @@ public class Statistics {
   private void computeStatsForField() {
     var newFoxCount = 0;
     var newRabbitCount = 0;
+    var newFoodCount = 0;
     var foxAllEnergy = 0.0;
 
-    for (Animal animal : field.getAnimals()) {
-      if (animal instanceof Rabbit) {
+    for (FieldEntity entity : field.getEntities()) {
+      if (entity instanceof Rabbit) {
         ++newRabbitCount;
-      } else if (animal instanceof Fox) {
+      } else if (entity instanceof Fox) {
         ++newFoxCount;
-        foxAllEnergy += animal.getEnergy();
+        foxAllEnergy += ((Fox) entity).getEnergy();
+      } else if (entity instanceof Food) {
+        ++newFoodCount;
       }
     }
 
     foxCount = newFoxCount;
     rabbitCount = newRabbitCount;
+    foodCount = newFoodCount;
     populationCount = foxCount + rabbitCount;
 
     foxPercentage = foxCount / (double) populationCount;
     rabbitPercentage = rabbitCount / (double) populationCount;
+
+    // food percentage according to the "living" population
+    foodPercentage = foodCount / (double) populationCount;
 
     foxAvgEnergy = foxAllEnergy / (double) foxCount;
   }
@@ -89,6 +96,7 @@ public class Statistics {
   public void addChangeListener(Runnable runnable) {
     changeListeners.add(runnable);
   }
+
   public void runChangeListeners() {
     for (Runnable runnable : changeListeners) {
       runnable.run();

@@ -1,9 +1,9 @@
 package simulation.entities.components;
 
-import simulation.entities.Animal;
+import simulation.entities.FieldEntity;
 
 import java.awt.*;
 
 public interface DrawingComponent {
-  void draw(Animal animal, Graphics graphics);
+  void draw(FieldEntity object, Graphics graphics);
 }

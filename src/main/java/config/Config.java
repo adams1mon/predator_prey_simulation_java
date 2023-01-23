@@ -1,77 +1,107 @@
 package config;
 
-import di.annotations.Autowired;
-import di.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+//@Component
 public class Config {
 
-  public static final String PROP_WIDTH = "width";
-  public static final String PROP_HEIGHT = "height";
-  public static final String PROP_RABBITS = "rabbits";
-  public static final String PROP_FOXES = "foxes";
-  public static final String PROP_CELL_SIZE = "canvasCellSize";
-  public static final String PROP_GAME_LOOP_INTERVAL_MILLIS = "gameLoopIntervalMillis";
+  public static String CONFIG_FILE = "config.properties";
+
+//  public static final String WIDTH = "width";
+//  public static final String HEIGHT = "height";
+//  public static final String CELL_SIZE = "cellSize";
+//  public static final String UPDATE_INTERVAL_MILLIS = "updateIntervalMillis";
+//
+//
+//  public static final String RABBITS = "rabbits";
+//  public static final String FOXES = "foxes";
+
+//  public static final String FOOD_ENERGY_CONTENT = 10;
 
   private static final Logger log = LoggerFactory.getLogger(Config.class);
 
-  private final Map<String, String> defaultProps = Map.ofEntries(
-      Map.entry(PROP_WIDTH, "120"),
-      Map.entry(PROP_HEIGHT, "80"),
-      Map.entry(PROP_RABBITS, "50"),
-      Map.entry(PROP_FOXES, "50"),
-      Map.entry(PROP_CELL_SIZE, "10"),
-      Map.entry(PROP_GAME_LOOP_INTERVAL_MILLIS, "50")
-  );
-  private final Properties properties = new Properties();
-  public static String CONFIG_FILE = "field_config.properties";
+//  private static final Map<String, String> DEFAULT_PROPS = Map.ofEntries(
+//      Map.entry(WIDTH, "120"),
+//      Map.entry(HEIGHT, "80"),
+//      Map.entry(RABBITS, "50"),
+//      Map.entry(FOXES, "50"),
+//      Map.entry(CELL_SIZE, "10"),
+//      Map.entry(UPDATE_INTERVAL_MILLIS, "50")
+//  );
+  private static final Properties PROPERTIES = new Properties();
 
-  public Config() {
-    try {
-      loadDefaults();
-      properties.load(new FileInputStream(CONFIG_FILE));
-    } catch (IOException e) {
-      e.printStackTrace();
-      log.error("{} file could not be read", CONFIG_FILE);
+  static {
+    loadDefaults();
+    loadFromFile();
+  }
+
+//  @Autowired
+  public Config() {}
+
+  private static void loadDefaults() {
+    log.info("loading default config");
+    for (ConfigValue v : ConfigValue.values()) {
+      PROPERTIES.setProperty(v.name(), v.value);
     }
   }
 
-  private void loadDefaults() {
-    log.info("loading default config");
-    defaultProps.forEach(properties::setProperty);
+  private static void loadFromFile() {
+    try {
+      PROPERTIES.load(new FileInputStream(CONFIG_FILE));
+    } catch (IOException e) {
+      e.printStackTrace();
+      log.warn("{} file could not be read, using default configs", CONFIG_FILE);
+    }
   }
 
-  public int getProperty(String name) {
-    return Integer.parseInt(properties.getProperty(name));
+  WIDTH("120"),
+  HEIGHT("80"),
+  CELL_SIZE("10"),
+  UPDATE_INTERVAL_MILLIS("50"),
+
+  RABBITS("50"),
+  FOXES("50"),
+  RABBIT_ENERGY_LIMIT("24"),
+  FOX_ENERGY_LIMIT("30"),
+
+  FOOD_SPAWN_CHANCE("0.1"),
+  FOOD_ENERGY_CONTENT("10"),
+  RABBIT_ENERGY_CONTENT("10");
+
+  public static int getProperty(ConfigValue value) {
+    return Integer.parseInt(PROPERTIES.getProperty(value.name()));
   }
 
-  public int getWidth() {
-    return getProperty(PROP_WIDTH);
+  public static int getWidth() {
+    return getProperty(ConfigValue.WIDTH);
   }
 
-  public int getHeight() {
-    return getProperty(PROP_HEIGHT);
+  public static int getHeight() {
+    return getProperty(ConfigValue.HEIGHT);
   }
 
-  public int getRabbitCount() {
-    return getProperty(PROP_RABBITS);
+  public static int getCellSize() {
+    return getProperty(ConfigValue.CELL_SIZE);
   }
 
-  public int getFoxCount() {
-    return getProperty(PROP_FOXES);
+  public static int getRabbitCount() {
+    return getProperty(RABBITS);
   }
 
-  public int getCellSize() {
-    return getProperty(PROP_CELL_SIZE);
+  public static int getFoxCount() {
+    return getProperty(FOXES);
   }
 
-  public int getGameLoopInterval() {
-    return getProperty(PROP_GAME_LOOP_INTERVAL_MILLIS);
+
+
+  public static int getGameLoopInterval() {
+    return getProperty(UPDATE_INTERVAL_MILLIS);
   }
 }

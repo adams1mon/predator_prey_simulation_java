@@ -6,20 +6,10 @@ import simulation.entities.components.PositionComponent;
 import simulation.field.Field;
 import utils.Pair;
 
-import java.awt.*;
+public abstract class Animal extends FieldEntity {
 
-public abstract class Animal {
+  public int energy;
 
-  public static final int ENERGY_DEFAULT = 20;
-
-  public Color color;
-
-  protected int x = 0;
-  protected int y = 0;
-
-  public int energy = ENERGY_DEFAULT;
-
-  protected DrawingComponent drawingComponent;
   protected MoveComponent moveComponent;
   protected PositionComponent positionComponent;
 
@@ -28,18 +18,21 @@ public abstract class Animal {
       MoveComponent moveComponent,
       PositionComponent positionComponent
   ) {
-    this.drawingComponent = drawingComponent;
+    super(drawingComponent);
     this.moveComponent = moveComponent;
     this.positionComponent = positionComponent;
   }
 
-  public Pair<Integer, Integer> getPosition() {
-    return new Pair<>(x, y);
+  @Override
+  public void move(Field field) {
+    moveComponent.move(this, field);
   }
 
-  public void setPosition(int x, int y) {
-    this.x = x;
-    this.y = y;
+  @Override
+  public void loseEnergy(Field field) {
+    if (--energy <= 0) {
+      field.remove(x, y);
+    }
   }
 
   public int getEnergy() {
@@ -54,18 +47,7 @@ public abstract class Animal {
     this.energy += energy;
   }
 
-  public void draw(Graphics graphics) {
-    drawingComponent.draw(this, graphics);
-  }
-
-  public void move(Field field) {
-    moveComponent.move(this, field);
-  }
-
   public Pair<Integer, Integer> getNewPosition() {
     return positionComponent.findNewPositionFromCurrent(this);
   }
-
-  public void loseEnergy(Field field) {}
-  public abstract void spawnOffspring(Field field);
 }

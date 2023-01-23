@@ -1,8 +1,9 @@
 package simulation.entities;
 
+import di.DependencyContainer;
 import simulation.entities.components.impl.FoxMoveComponent;
-import simulation.entities.components.impl.ObjectDrawingComponent;
-import simulation.entities.components.impl.ObjectPositionComponent;
+import simulation.entities.components.impl.DefaultDrawingComponent;
+import simulation.entities.components.impl.DefaultPositionComponent;
 import simulation.field.Field;
 
 import java.awt.*;
@@ -14,11 +15,12 @@ public class Fox extends Animal {
 
   public Fox() {
     super(
-        new ObjectDrawingComponent(),
-        new FoxMoveComponent(),
-        new ObjectPositionComponent()
+        (DefaultDrawingComponent) DependencyContainer.getInstance(DefaultDrawingComponent.class),
+        (FoxMoveComponent) DependencyContainer.getInstance(FoxMoveComponent.class),
+        (DefaultPositionComponent) DependencyContainer.getInstance(DefaultPositionComponent.class)
     );
     super.color = Color.RED;
+    super.energy = 20;
   }
 
   /**
@@ -39,17 +41,6 @@ public class Fox extends Animal {
         fox.setEnergy(energy);
         field.add(newX, newY, fox);
       }
-    }
-  }
-
-  /**
-   * Foxes lose a small fixed amount of energy with every time step.
-   * A fox dies if its energy level drops to zero.
-   */
-  @Override
-  public void loseEnergy(Field field) {
-    if (--energy <= 0) {
-      field.remove(x, y);
     }
   }
 }

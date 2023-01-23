@@ -1,5 +1,6 @@
 package di;
 
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Bean;
 import di.annotations.Component;
@@ -41,29 +42,53 @@ public class DependencyContainer {
   }
 
   private static Graph<Class<?>> initializeDependencyGraph(Collection<Class<?>> classes) {
-    log.info("initializing dependency graph");
+    var nodes = createNodeMap(classes);
+    var beanMethodNodes = createBeanMethodNodeMap(nodes);
+    return buildDependencyGraph(nodes, beanMethodNodes);
+  }
 
-    var graph = new Graph<Class<?>>();
-
+  private static HashMap<Class<?>, Node<Class<?>>> createNodeMap(Collection<Class<?>> classes) {
+    log.debug("initializing class - node map from @{}", Component.class.getSimpleName());
     var nodes = new HashMap<Class<?>, Node<Class<?>>>();
-    var beanMethodReturnTypes = new HashMap<Class<?>, Node<Class<?>>>();
+    classes.forEach(clazz -> nodes.put(clazz, new Node<>(clazz)));
+    return nodes;
+  }
 
-    classes.forEach(clazz -> {
-      var node = new Node<Class<?>>(clazz);
-      nodes.put(clazz, node);
-      getBeanMethods(clazz).forEach(method -> beanMethodReturnTypes.put(method.getReturnType(), node));
-    });
+  /**
+   *  a bean method's return type depends on its class itself (it has to be instantiated in order to call the method)
+   *  static methods would not be good, because they can only reference static resources
+   *  putting the returned types into "nodes" wouldn't be good, because its elements require @Autowired constructors
+   *  (which the returned types shouldn't have)
+   */
+  private static HashMap<Class<?>, Node<Class<?>>> createBeanMethodNodeMap(
+      HashMap<Class<?>, Node<Class<?>>> nodes
+  ) {
+    log.debug("initializing class - node map from @{} methods", Bean.class.getSimpleName());
+    var beanMethodNodes = new HashMap<Class<?>, Node<Class<?>>>();
+    nodes.forEach(
+        (clazz, node) -> getBeanMethods(clazz).forEach(
+            method -> beanMethodNodes.put(method.getReturnType(), node)
+        )
+    );
+    return beanMethodNodes;
+  }
 
-    // discover dependencies
+  private static Graph<Class<?>> buildDependencyGraph(
+      HashMap<Class<?>, Node<Class<?>>> nodes,
+      HashMap<Class<?>, Node<Class<?>>> beanMethodNodes
+  ) {
+    var graph = new Graph<Class<?>>();
     nodes.forEach((clazz, node) -> {
       var constructor = getAutowiredConstructor(clazz);
       for (var param : constructor.getParameters()) {
         var paramType = param.getType();
         var className = clazz.getName();
 
-        if (beanMethodReturnTypes.containsKey(paramType)) {
-          log.info("registering dependency {} of {} (from @Bean method)", paramType, className);
-          graph.addEdge(nodes.get(clazz), beanMethodReturnTypes.get(paramType));
+        // bean methods have priority
+        if (beanMethodNodes.containsKey(paramType)) {
+          log.info("registering dependency {} of {} (from @{} method)",
+              paramType, className, Bean.class.getSimpleName());
+          graph.addEdge(nodes.get(clazz), beanMethodNodes.get(paramType));
           continue;
         }
 
@@ -78,9 +103,10 @@ public class DependencyContainer {
           continue;
         }
 
-        log.info("dependency {} of class {} should be registered manually via a @Bean method " +
+        log.info("dependency {} of class {} should be registered manually via a @{}} method " +
                 "(or via a register() call before calling initializeContext() - not recommended, " +
                 "would overwrite @Bean methods)",
+            Bean.class.getSimpleName(),
             paramType,
             className
         );
@@ -134,7 +160,8 @@ public class DependencyContainer {
   {
     var beanObjects = new HashMap<Class<?>, Object>();
     for (var method : getBeanMethods(instance.getClass())) {
-      log.info("invoking @Bean method {} of class {}", method.getName(), instance.getClass().getName());
+      log.info("invoking @{} method {} of class {}",
+          Bean.class.getSimpleName(), method.getName(), instance.getClass().getName());
       beanObjects.put(method.getReturnType(), method.invoke(instance));
     }
     return beanObjects;
@@ -147,10 +174,14 @@ public class DependencyContainer {
 
       // look in the global container
       if (!container.containsKey(params[i].getType())) {
-        throw new RuntimeException("constructor parameter " + params[i].getType() +
-            " of class " + function.getDeclaringClass().getName() + " has not been instantiated: " +
-            "not annotated with @Component and doesn't have an @Autowired constructor and " +
-            "was also not registered by a @Bean method or manually");
+        throw new RuntimeException(
+              "constructor parameter " + params[i].getType() +
+              " of class " + function.getDeclaringClass().getName() +
+              " has not been instantiated: not annotated with @" + Component.class.getSimpleName() +
+              " and doesn't have an @" + Autowired.class.getSimpleName() +
+              " constructor and was also not registered by a @" + Bean.class.getSimpleName() +
+              " method or manually"
+        );
       }
 
       args[i] = container.get(params[i].getType());
@@ -169,7 +200,8 @@ public class DependencyContainer {
   private static Constructor<?> getAutowiredConstructor(Class<?> clazz) {
     var autowiredConstructors = filterByAnnotation(List.of(clazz.getConstructors()), Autowired.class);
     if (autowiredConstructors.isEmpty()) {
-      throw new RuntimeException(clazz.getName() + " doesn't have an @Autowired annotated constructor");
+      throw new RuntimeException(clazz.getName() + " doesn't have an @" + Autowired.class.getSimpleName() +
+          " annotated constructor");
     }
     return autowiredConstructors.get(0);
   }

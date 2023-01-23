@@ -1,7 +1,10 @@
 package simulation.entities.components.impl;
 
 import config.Config;
+import config.ConfigValue;
 import di.DependencyContainer;
+import di.annotations.Autowired;
+import di.annotations.Component;
 import simulation.entities.Animal;
 import simulation.entities.components.PositionComponent;
 import utils.Pair;
@@ -9,7 +12,8 @@ import utils.Pair;
 import java.util.List;
 import java.util.Random;
 
-public class ObjectPositionComponent implements PositionComponent {
+@Component
+public class DefaultPositionComponent implements PositionComponent {
 
   public static List<Pair<Integer, Integer>> DIRECTIONS = List.of(
     new Pair<>(-1, 0),
@@ -18,15 +22,19 @@ public class ObjectPositionComponent implements PositionComponent {
     new Pair<>(0, 1)
   );
 
+  private final int fieldWidth;
+  private final int fieldHeight;
+
+  @Autowired
+  public DefaultPositionComponent(Config config) {
+    fieldWidth = config.getProperty(ConfigValue.WIDTH);
+    fieldHeight = config.getProperty(ConfigValue.HEIGHT);
+  }
+
   @Override
   public Pair<Integer, Integer> findNewPositionFromCurrent(Animal animal) {
     var random = new Random();
     var directionIndex = random.nextInt(DIRECTIONS.size());
-
-    var config = (Config) DependencyContainer.getInstance(Config.class);
-
-    var fieldWidth = config.getWidth();
-    var fieldHeight = config.getHeight();
 
     var pos = animal.getPosition();
     var x = pos.getFirst();

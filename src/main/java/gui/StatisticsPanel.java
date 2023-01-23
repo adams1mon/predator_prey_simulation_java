@@ -16,11 +16,11 @@ public class StatisticsPanel extends JPanel {
   private final JLabel populationCountLabel = new JLabel();
   private final JLabel foxCountLabel = new JLabel();
   private final JLabel rabbitCountLabel = new JLabel();
+  private final JLabel foodCountLabel = new JLabel();
   private final JLabel foxEnergyLabel = new JLabel();
 
   @Autowired
   public StatisticsPanel(Field field) {
-//    this.statistics = new Statistics((Field) DependencyContainer.getInstance(Field.class));
     this.statistics = new Statistics(field);
 
     updateLabels();
@@ -34,6 +34,7 @@ public class StatisticsPanel extends JPanel {
   private void addLabels() {
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
+
     constraints.gridx = 0;
     constraints.gridy = 0;
     add(populationCountLabel, constraints);
@@ -41,10 +42,13 @@ public class StatisticsPanel extends JPanel {
     constraints.gridy = 1;
     add(rabbitCountLabel, constraints);
 
-    constraints.gridx = 1;
+    constraints.gridy = 2;
     add(foxCountLabel, constraints);
 
-    constraints.gridx = 2;
+    constraints.gridy = 3;
+    add(foodCountLabel, constraints);
+
+    constraints.gridy = 4;
     add(foxEnergyLabel, constraints);
   }
 
@@ -55,7 +59,8 @@ public class StatisticsPanel extends JPanel {
     var oneTimeStatsBtn = new JButton("Get current stats");
     oneTimeStatsBtn.addActionListener(e -> statistics.computeStats());
 
-    constraints.gridy = 3;
+    constraints.gridx = 1;
+    constraints.gridy = 0;
     add(oneTimeStatsBtn, constraints);
 
     var startStatsBtn = new JButton("Start rolling stats");
@@ -74,10 +79,10 @@ public class StatisticsPanel extends JPanel {
       stopStatsBtn.setEnabled(false);
     });
 
-    constraints.gridx = 1;
+    constraints.gridy = 2;
     add(startStatsBtn, constraints);
 
-    constraints.gridx = 2;
+    constraints.gridy = 3;
     add(stopStatsBtn, constraints);
   }
 
@@ -90,6 +95,9 @@ public class StatisticsPanel extends JPanel {
 
     String rabbitCountTemplate = "Rabbit count: %d (%.2f)";
     rabbitCountLabel.setText(String.format(rabbitCountTemplate, statistics.rabbitCount, statistics.rabbitPercentage));
+
+    String foodCountTemplate = "Food count (percentage against population): %d (%.2f)";
+    foodCountLabel.setText(String.format(foodCountTemplate, statistics.foodCount, statistics.foodPercentage));
 
     String foxEnergyTemplate = "Fox avg energy: %.2f";
     foxEnergyLabel.setText(String.format(foxEnergyTemplate, statistics.foxAvgEnergy));

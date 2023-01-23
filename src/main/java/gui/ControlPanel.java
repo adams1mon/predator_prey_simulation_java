@@ -11,28 +11,35 @@ import java.awt.*;
 @Component
 public class ControlPanel extends JPanel {
 
-  private int spinnerValue = 20;
+  private int animalSpinnerValue = 20;
+  private double foodSpinnerValue = 0.1;
 
   @Autowired
   public ControlPanel(Field field, GameLoop gameLoop) {
 
-//    var field = (Field) DependencyContainer.getInstance(Field.class);
-//    var gameLoop = (GameLoop) DependencyContainer.getInstance(GameLoop.class);
-
     setLayout(new FlowLayout());
 
-    var spinner = new JSpinner();
-    spinner.setModel(new SpinnerNumberModel(spinnerValue, 1, 80, 1));
-    spinner.addChangeListener((event) -> spinnerValue = Integer.parseInt(spinner.getValue().toString()));
-    add(spinner);
+    var animalSpinner = new JSpinner();
+    animalSpinner.setModel(new SpinnerNumberModel(animalSpinnerValue, 1, 80, 1));
+    animalSpinner.addChangeListener(e -> animalSpinnerValue = Integer.parseInt(animalSpinner.getValue().toString()));
+    add(animalSpinner);
 
     var addRabbitsBtn = new JButton("Add rabbits");
-    addRabbitsBtn.addActionListener(e -> field.addRabbits(spinnerValue));
+    addRabbitsBtn.addActionListener(e -> field.addRabbits(animalSpinnerValue));
     add(addRabbitsBtn);
 
     var addFoxesBtn = new JButton("Add foxes");
-    addFoxesBtn.addActionListener(e -> field.addFoxes(spinnerValue));
+    addFoxesBtn.addActionListener(e -> field.addFoxes(animalSpinnerValue));
     add(addFoxesBtn);
+
+    var foodSpinner = new JSpinner();
+    foodSpinner.setModel(new SpinnerNumberModel(foodSpinnerValue, 0.01, 0.99, 0.001));
+    foodSpinner.addChangeListener(e -> foodSpinnerValue = Double.parseDouble(foodSpinner.getValue().toString()));
+    add(foodSpinner);
+
+    var changeFoodSpawnChanceBtn = new JButton("Set food spawn chance");
+    changeFoodSpawnChanceBtn.addActionListener(e -> field.setFoodSpawnChance(foodSpinnerValue));
+    add(changeFoodSpawnChanceBtn);
 
     var toggleStopStartBtn = new JButton(gameLoop.isRunning() ? "Stop" : "Start");
     toggleStopStartBtn.addActionListener(e -> {
