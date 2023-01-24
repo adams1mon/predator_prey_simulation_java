@@ -20,7 +20,7 @@ public class RabbitMoveComponent implements MoveComponent {
    * The energy of the rabbit increases by a predefined value.
    */
   @Override
-  public void move(Animal animal, Field field) {
+  public void move(Animal animal) {
     var oldPos = animal.getPosition();
     var oldX = oldPos.getFirst();
     var oldY = oldPos.getSecond();
@@ -29,6 +29,7 @@ public class RabbitMoveComponent implements MoveComponent {
     var newX = newPos.getFirst();
     var newY = newPos.getSecond();
 
+    var field = animal.getField();
     var entity = field.getEntity(newX, newY);
 
     if (entity != null) {

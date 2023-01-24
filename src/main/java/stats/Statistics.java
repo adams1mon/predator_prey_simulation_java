@@ -33,6 +33,35 @@ public class Statistics {
     this.field = field;
   }
 
+  public void startRollingStats() {
+    if (statisticsThreadRunning) return;
+
+    statisticsThread = new Thread(() -> {
+      statisticsThreadRunning = true;
+
+      while(statisticsThreadRunning) {
+        computeStats();
+        try {
+          Thread.sleep(Config.getIntProperty(ConfigValue.STAT_UPDATE_INTERVAL_MILLIS));
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+
+    statisticsThread.start();
+  }
+
+  public void stopRollingStats() {
+    if (!statisticsThreadRunning) return;
+    try {
+      statisticsThreadRunning = false;
+      statisticsThread.join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
   public void computeStats() {
     computeStatsForField();
     runChangeListeners();
@@ -67,35 +96,6 @@ public class Statistics {
     foodPercentage = foodCount / (double) populationCount;
 
     foxAvgEnergy = foxAllEnergy / (double) foxCount;
-  }
-
-  public void startRollingStats() {
-    if (statisticsThreadRunning) return;
-
-    statisticsThread = new Thread(() -> {
-      statisticsThreadRunning = true;
-
-      while(statisticsThreadRunning) {
-        computeStats();
-        try {
-          Thread.sleep(Config.getIntProperty(ConfigValue.STAT_UPDATE_INTERVAL_MILLIS));
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    });
-
-    statisticsThread.start();
-  }
-
-  public void stopRollingStats() {
-    if (!statisticsThreadRunning) return;
-    try {
-      statisticsThreadRunning = false;
-      statisticsThread.join();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
   }
 
   public void addChangeListener(Runnable runnable) {

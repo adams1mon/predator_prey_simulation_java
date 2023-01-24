@@ -10,8 +10,9 @@ import simulation.field.Field;
 
 public class Fox extends Animal {
 
-  public Fox() {
+  public Fox(Field field) {
     super(
+        field,
         (DefaultDrawingComponent) DependencyContainer.getInstance(DefaultDrawingComponent.class),
         (FoxMoveComponent) DependencyContainer.getInstance(FoxMoveComponent.class),
         (DefaultPositionComponent) DependencyContainer.getInstance(DefaultPositionComponent.class)
@@ -26,14 +27,14 @@ public class Fox extends Animal {
    * The energy is split evenly between the parent and the child.
    */
   @Override
-  public void spawnOffspring(Field field) {
+  public void spawnOffspring() {
     if (energy >= energyLimit) {
       var newPos = getNewPosition();
       var newX = newPos.getFirst();
       var newY = newPos.getSecond();
 
       if (!field.cellTaken(newX, newY)) {
-        var fox = new Fox();
+        var fox = new Fox(field);
         energy /= 2;
         fox.setEnergy(energy);
         field.add(newX, newY, fox);

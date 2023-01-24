@@ -15,22 +15,23 @@ public abstract class Animal extends FieldEntity {
   protected PositionComponent positionComponent;
 
   protected Animal(
+      Field field,
       DrawingComponent drawingComponent,
       MoveComponent moveComponent,
       PositionComponent positionComponent
   ) {
-    super(drawingComponent);
+    super(field, drawingComponent);
     this.moveComponent = moveComponent;
     this.positionComponent = positionComponent;
   }
 
   @Override
-  public void move(Field field) {
-    moveComponent.move(this, field);
+  public void move() {
+    moveComponent.move(this);
   }
 
   @Override
-  public void loseEnergy(Field field) {
+  public void loseEnergy() {
     if (--energy <= 0) {
       field.remove(x, y);
     }

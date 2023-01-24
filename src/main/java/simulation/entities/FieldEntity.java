@@ -13,12 +13,19 @@ public abstract class FieldEntity {
   protected int x = 0;
   protected int y = 0;
 
+  protected Field field;
   protected DrawingComponent drawingComponent;
 
   protected FieldEntity(
+      Field field,
       DrawingComponent drawingComponent
   ) {
+    this.field = field;
     this.drawingComponent = drawingComponent;
+  }
+
+  public Field getField() {
+    return field;
   }
 
   public Pair<Integer, Integer> getPosition() {
@@ -34,7 +41,7 @@ public abstract class FieldEntity {
     drawingComponent.draw(this, graphics);
   }
 
-  public void move(Field field) {}
-  public void spawnOffspring(Field field) {}
-  public void loseEnergy(Field field) {}
+  public void move() {}
+  public void spawnOffspring() {}
+  public void loseEnergy() {}
 }

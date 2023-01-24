@@ -41,7 +41,6 @@ public class MainWindow extends JFrame {
   }
 
   private void addCanvas(SimulationCanvas canvas) {
-//    var canvas = (SimulationCanvas) DependencyContainer.getInstance(SimulationCanvas.class);
     var constraints = new GridBagConstraints();
     constraints.gridx = 0;
     constraints.gridy = 0;
@@ -49,7 +48,6 @@ public class MainWindow extends JFrame {
   }
 
   private void addControlPanel(ControlPanel controlPanel) {
-//    var controlPanel = (ControlPanel) DependencyContainer.getInstance(ControlPanel.class);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;
@@ -58,7 +56,6 @@ public class MainWindow extends JFrame {
   }
 
   private void addStatisticsPanel(StatisticsPanel statisticsPanel) {
-//    var statisticsPanel = (StatisticsPanel) DependencyContainer.getInstance(StatisticsPanel.class);
     var constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
     constraints.gridx = 0;
@@ -67,7 +64,6 @@ public class MainWindow extends JFrame {
   }
 
   private void initGameLoop(GameLoop gameLoop) {
-//    var gameLoop = (GameLoop) DependencyContainer.getInstance(GameLoop.class);
     gameLoop.repaintOnce();
   }
 }

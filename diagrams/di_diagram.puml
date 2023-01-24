@@ -1,0 +1,20 @@
+@startuml
+
+annotation Autowired
+annotation Component
+annotation Bean
+
+DependencyContainer ..> PackageScanner
+DependencyContainer --> Graph
+DependencyContainer ..> Component
+DependencyContainer ..> Bean
+DependencyContainer ..> Autowired
+
+Graph *-- Node
+Graph ..> NodeStatus
+
+Node -- NodeStatus
+
+enum NodeStatus
+
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class FieldEntity
+FieldEntity -- DrawingComponent
+FieldEntity <|-- Animal
+FieldEntity <|-- Food
+
+abstract class Animal
+Animal -- MoveComponent
+Animal -- PositionComponent
+
+interface DrawingComponent
+FieldEntity <.. DrawingComponent
+
+interface MoveComponent
+Animal <.. MoveComponent
+
+interface PositionComponent
+Animal <.. PositionComponent
+
+class DefaultDrawingComponent
+DrawingComponent <|.. DefaultDrawingComponent
+
+class DefaultPositionComponent
+PositionComponent <|.. DefaultPositionComponent
+
+class RabbitMoveComponent
+MoveComponent <|.. RabbitMoveComponent
+
+class FoxMoveComponent
+MoveComponent <|.. FoxMoveComponent
+
+class Food
+DefaultDrawingComponent <.. Food
+
+class Rabbit
+Animal <|-- Rabbit
+DefaultDrawingComponent <.. Rabbit
+RabbitMoveComponent <.. Rabbit
+DefaultPositionComponent <.. Rabbit
+
+class Fox
+Animal <|-- Fox
+DefaultDrawingComponent <.. Fox
+FoxMoveComponent <.. Fox
+DefaultPositionComponent <.. Fox
+
+@enduml

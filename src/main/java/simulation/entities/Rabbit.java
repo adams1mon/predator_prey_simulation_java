@@ -10,11 +10,9 @@ import simulation.field.Field;
 
 public class Rabbit extends Animal {
 
-  public static final int ENERGY_LIMIT = 24;
-
-  public Rabbit() {
-
+  public Rabbit(Field field) {
     super(
+        field,
         (DefaultDrawingComponent) DependencyContainer.getInstance(DefaultDrawingComponent.class),
         (RabbitMoveComponent) DependencyContainer.getInstance(RabbitMoveComponent.class),
         (DefaultPositionComponent) DependencyContainer.getInstance(DefaultPositionComponent.class)
@@ -24,14 +22,14 @@ public class Rabbit extends Animal {
   }
 
   @Override
-  public void spawnOffspring(Field field) {
-    if (energy >= ENERGY_LIMIT) {
+  public void spawnOffspring() {
+    if (energy >= energyLimit) {
       var newPos = getNewPosition();
       var newX = newPos.getFirst();
       var newY = newPos.getSecond();
 
       if (!field.cellTaken(newX, newY)) {
-        var rabbit = new Rabbit();
+        var rabbit = new Rabbit(field);
         energy /= 2;
         rabbit.setEnergy(energy);
         field.add(newX, newY, rabbit);

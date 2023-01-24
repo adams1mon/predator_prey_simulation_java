@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Statistics {
+- changeListeners: List<Runnable>
+
++ addChangeListener(Runnable)
++ computeStats()
+- runChangeListeners()
+}
+
+class StatisticsPanel
+StatisticsPanel --> Statistics
+
+@enduml

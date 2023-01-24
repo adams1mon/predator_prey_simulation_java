@@ -96,15 +96,6 @@ public class PackageScanner {
     return classes;
   }
 
-  private static Set<Class<?>> filterClassesByAnnotation(
-      Set<Class<?>> classes,
-      Class<? extends Annotation> annotation
-  ) {
-    return classes.stream()
-        .filter(clazz -> clazz.isAnnotationPresent(annotation))
-        .collect(Collectors.toSet());
-  }
-
   public static Set<Class<?>> getClasses() {
     return classes;
   }

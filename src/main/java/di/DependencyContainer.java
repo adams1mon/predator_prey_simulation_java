@@ -22,7 +22,7 @@ public class DependencyContainer {
   private static final HashMap<Class<?>, Object> container = new HashMap<>();
 
   public static void register(Object obj) {
-    if(!container.containsKey(obj.getClass())) {
+    if (!container.containsKey(obj.getClass())) {
       log.info("registering {} instance", obj.getClass().getName());
       container.put(obj.getClass(), obj);
     }

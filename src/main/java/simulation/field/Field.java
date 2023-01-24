@@ -56,13 +56,13 @@ public class Field {
 
   public void addRabbits(int count) {
     for (int i = 0; i < count; ++i) {
-      tryToPlaceOnFreeCell(new Rabbit());
+      tryToPlaceOnFreeCell(new Rabbit(this));
     }
   }
 
   public void addFoxes(int count) {
     for (int i = 0; i < count; ++i) {
-      tryToPlaceOnFreeCell(new Fox());
+      tryToPlaceOnFreeCell(new Fox(this));
     }
   }
 
@@ -195,9 +195,9 @@ public class Field {
       readLock.unlock();
 
       if (!outdated) {
-        entity.move(this);
-        entity.spawnOffspring(this);
-        entity.loseEnergy(this);
+        entity.move();
+        entity.spawnOffspring();
+        entity.loseEnergy();
       }
     }
   }
@@ -207,7 +207,7 @@ public class Field {
     for (int i = 0; i < height; ++i) {
       for (int j = 0; j < width; ++j) {
         if (grid.get(i).get(j) == null && random.nextDouble() < foodSpawnChance) {
-          add(j, i, new Food());
+          add(j, i, new Food(this));
         }
       }
     }
