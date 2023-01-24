@@ -2,7 +2,6 @@ package simulation.entities.components.impl;
 
 import config.Config;
 import config.ConfigValue;
-import di.DependencyContainer;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import simulation.entities.Animal;
@@ -26,9 +25,9 @@ public class DefaultPositionComponent implements PositionComponent {
   private final int fieldHeight;
 
   @Autowired
-  public DefaultPositionComponent(Config config) {
-    fieldWidth = config.getProperty(ConfigValue.WIDTH);
-    fieldHeight = config.getProperty(ConfigValue.HEIGHT);
+  public DefaultPositionComponent() {
+    fieldWidth = Config.getIntProperty(ConfigValue.WIDTH);
+    fieldHeight = Config.getIntProperty(ConfigValue.HEIGHT);
   }
 
   @Override

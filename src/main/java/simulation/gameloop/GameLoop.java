@@ -1,6 +1,7 @@
 package simulation.gameloop;
 
 import config.Config;
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import gui.SimulationCanvas;
@@ -15,10 +16,8 @@ public class GameLoop {
   private Thread thread;
 
   @Autowired
-  public GameLoop(Config config, SimulationCanvas canvas) {
-//    this.canvas = (SimulationCanvas) DependencyContainer.getInstance(SimulationCanvas.class);
-//    var config = (Config) DependencyContainer.getInstance(Config.class);
-    intervalMillis = config.getGameLoopInterval();
+  public GameLoop(SimulationCanvas canvas) {
+    intervalMillis = Config.getIntProperty(ConfigValue.UPDATE_INTERVAL_MILLIS);
     this.canvas = canvas;
   }
 

@@ -2,10 +2,8 @@ package simulation.entities.components.impl;
 
 import config.Config;
 import config.ConfigValue;
-import di.DependencyContainer;
 import di.annotations.Autowired;
 import di.annotations.Component;
-import simulation.entities.Animal;
 import simulation.entities.FieldEntity;
 import simulation.entities.components.DrawingComponent;
 
@@ -17,8 +15,8 @@ public class DefaultDrawingComponent implements DrawingComponent {
   private final int cellSize;
 
   @Autowired
-  public DefaultDrawingComponent(Config config) {
-    cellSize = config.getProperty(ConfigValue.CELL_SIZE);
+  public DefaultDrawingComponent() {
+    cellSize = Config.getIntProperty(ConfigValue.CELL_SIZE);
   }
 
   @Override

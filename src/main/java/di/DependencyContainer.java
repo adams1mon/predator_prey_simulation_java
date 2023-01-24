@@ -1,6 +1,5 @@
 package di;
 
-import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Bean;
 import di.annotations.Component;
@@ -11,7 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DependencyContainer {
@@ -103,12 +105,13 @@ public class DependencyContainer {
           continue;
         }
 
-        log.info("dependency {} of class {} should be registered manually via a @{}} method " +
+        log.warn("dependency {} of class {} should be registered manually via a @{} method " +
                 "(or via a register() call before calling initializeContext() - not recommended, " +
-                "would overwrite @Bean methods)",
-            Bean.class.getSimpleName(),
+                "would overwrite @{} methods)",
             paramType,
-            className
+            className,
+            Bean.class.getSimpleName(),
+            Bean.class.getSimpleName()
         );
       }
     });
@@ -133,7 +136,7 @@ public class DependencyContainer {
               container.put(clazz, instance);
               container.putAll(invokeBeanMethods(instance));
             }  catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-              throw new RuntimeException("error while initializing class " + clazz.getName());
+              throw new RuntimeException("error while initializing class " + clazz.getName(), e);
             }
           }
         });

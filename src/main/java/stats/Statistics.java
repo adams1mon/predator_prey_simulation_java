@@ -1,6 +1,9 @@
 package stats;
 
-import simulation.entities.*;
+import simulation.entities.FieldEntity;
+import simulation.entities.Food;
+import simulation.entities.Fox;
+import simulation.entities.Rabbit;
 import simulation.field.Field;
 
 import java.util.LinkedList;

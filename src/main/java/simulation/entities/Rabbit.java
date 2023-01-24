@@ -1,9 +1,10 @@
 package simulation.entities;
 
+import config.Config;
+import config.ConfigValue;
 import di.DependencyContainer;
 import simulation.entities.components.impl.DefaultDrawingComponent;
 import simulation.entities.components.impl.DefaultPositionComponent;
-import simulation.entities.components.impl.FoxMoveComponent;
 import simulation.entities.components.impl.RabbitMoveComponent;
 import simulation.field.Field;
 
@@ -20,7 +21,7 @@ public class Rabbit extends Animal {
         (RabbitMoveComponent) DependencyContainer.getInstance(RabbitMoveComponent.class),
         (DefaultPositionComponent) DependencyContainer.getInstance(DefaultPositionComponent.class)
     );
-    super.color = Color.GREEN;
+    super.color = Config.getColorProperty(ConfigValue.RABBIT_COLOR);
     super.energy = 20;
   }
 
@@ -33,7 +34,6 @@ public class Rabbit extends Animal {
 
       if (!field.cellTaken(newX, newY)) {
         var rabbit = new Rabbit();
-        rabbit.setPosition(newX, newY);
         energy /= 2;
         rabbit.setEnergy(energy);
         field.add(newX, newY, rabbit);

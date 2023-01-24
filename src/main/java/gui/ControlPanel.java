@@ -1,5 +1,7 @@
 package gui;
 
+import config.Config;
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import simulation.field.Field;
@@ -12,7 +14,7 @@ import java.awt.*;
 public class ControlPanel extends JPanel {
 
   private int animalSpinnerValue = 20;
-  private double foodSpinnerValue = 0.1;
+  private double foodSpinnerValue = Config.getDoubleProperty(ConfigValue.FOOD_SPAWN_CHANCE);
 
   @Autowired
   public ControlPanel(Field field, GameLoop gameLoop) {

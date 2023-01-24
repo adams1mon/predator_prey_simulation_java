@@ -1,9 +1,13 @@
 package simulation.field;
 
 import config.Config;
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
-import simulation.entities.*;
+import simulation.entities.FieldEntity;
+import simulation.entities.Food;
+import simulation.entities.Fox;
+import simulation.entities.Rabbit;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,17 +21,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Component
 public class Field {
 
-//  public static final int FOOD_PER_ROUND = 50;
-//  public static final double FOOD_SPAWN_CHANCE = 0.1;
-
-  private double foodSpawnChance = 0.1;
-
   private final int width;
   private final int height;
+  private double foodSpawnChance;
 
-//  private final ArrayList<ArrayList<Animal>> grid = new ArrayList<>();
   private final ArrayList<ArrayList<FieldEntity>> grid = new ArrayList<>();
-//  private final HashSet<Animal> animals = new HashSet<>();
   private final HashSet<FieldEntity> entities = new HashSet<>();
 
   private final ReadWriteLock gridLock = new ReentrantReadWriteLock();
@@ -37,24 +35,15 @@ public class Field {
   private final Random random = new Random();
 
   @Autowired
-  public Field(Config config) {
-
-    this.width = config.getWidth();
-    this.height = config.getHeight();
+  public Field() {
+    width = Config.getIntProperty(ConfigValue.WIDTH);
+    height = Config.getIntProperty(ConfigValue.HEIGHT);
+    foodSpawnChance = Config.getDoubleProperty(ConfigValue.FOOD_SPAWN_CHANCE);
 
     createEmptyGrid();
-    addRabbits(config.getRabbitCount());
-    addFoxes(config.getFoxCount());
+    addRabbits(Config.getIntProperty(ConfigValue.RABBIT_COUNT));
+    addFoxes(Config.getIntProperty(ConfigValue.FOX_COUNT));
   }
-
-//  public Collection<Animal> getAnimals() {
-//    try {
-//      readLock.lock();
-//      return new HashSet<>(entities);
-//    } finally {
-//      readLock.unlock();
-//    }
-//  }
 
   public Collection<FieldEntity> getEntities() {
     try {
@@ -62,12 +51,6 @@ public class Field {
       return new HashSet<>(entities);
     } finally {
       readLock.unlock();
-    }
-  }
-
-  public void addFood(int count) {
-    for (int i = 0; i < count; ++i) {
-      tryToPlaceOnFreeCell(new Food());
     }
   }
 
@@ -89,7 +72,6 @@ public class Field {
 
   private void createEmptyGrid() {
     for (int i = 0; i < height; ++i) {
-//      var row = new ArrayList<Animal>();
       var row = new ArrayList<FieldEntity>();
       for (int j = 0; j < width; ++j) {
         row.add(null);
@@ -144,19 +126,10 @@ public class Field {
   /**
    * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
    */
-//  public void add(int x, int y, Animal animal) {
-//    try {
-//      writeLock.lock();
-//      animals.add(animal);
-//      grid.get(y).set(x, animal);
-//    } finally {
-//      writeLock.unlock();
-//    }
-//  }
-
   public void add(int x, int y, FieldEntity entity) {
     try {
       writeLock.lock();
+      entity.setPosition(x, y);
       entities.add(entity);
       grid.get(y).set(x, entity);
     } finally {
@@ -193,17 +166,6 @@ public class Field {
   /**
    * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
    */
-//  public void draw(Graphics graphics) {
-//    try {
-//      readLock.lock();
-//      for (Animal animal : entities) {
-//        animal.draw(graphics);
-//      }
-//    } finally {
-//      readLock.unlock();
-//    }
-//  }
-
   public void draw(Graphics graphics) {
     try {
       readLock.lock();
@@ -218,54 +180,8 @@ public class Field {
   /**
    * "animals & grid" mutated from UI through addFoxes/addRabbits --> synchronization needed
    */
-//  public void simulate() {
-//
-//    spawnFood();
-//
-//    readLock.lock();
-//    var animalsCopy = new HashSet<>(entities);
-//    readLock.unlock();
-//
-//    for (Animal animal : animalsCopy) {
-//
-//      // it can happen that the original "animals" set doesn't contain the current entity any more (overridden by move)
-//      readLock.lock();
-//      var outdated = !entities.contains(animal);
-//      readLock.unlock();
-//
-//      if (!outdated) {
-//       animal.move(this);
-//       animal.spawnOffspring(this);
-//       animal.loseEnergy(this);
-//      }
-//    }
-//  }
-
   public void simulate() {
-
-//    addFood(FOOD_PER_ROUND);
-
-//    readLock.lock();
-//    for (int i = 0; i < height; ++i) {
-//      for (int j = 0; j < width; ++j) {
-//        if (!cellTaken(j, i) && random.nextDouble() < FOOD_SPAWN_CHANCE) {
-//          add(j, i, new Food());
-//        }
-//      }
-//    }
-//    readLock.unlock();
-
-    writeLock.lock();
-    for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < width; ++j) {
-        if (grid.get(i).get(j) == null && random.nextDouble() < foodSpawnChance) {
-          var food = new Food();
-          entities.add(food);
-          grid.get(i).set(j, food);
-        }
-      }
-    }
-    writeLock.unlock();
+    spawnFood();
 
     readLock.lock();
     var entitiesCopy = new HashSet<>(entities);
@@ -284,6 +200,18 @@ public class Field {
         entity.loseEnergy(this);
       }
     }
+  }
+
+  private void spawnFood() {
+    writeLock.lock();
+    for (int i = 0; i < height; ++i) {
+      for (int j = 0; j < width; ++j) {
+        if (grid.get(i).get(j) == null && random.nextDouble() < foodSpawnChance) {
+          add(j, i, new Food());
+        }
+      }
+    }
+    writeLock.unlock();
   }
 
   /**

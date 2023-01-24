@@ -1,9 +1,11 @@
 package simulation.entities;
 
+import config.Config;
+import config.ConfigValue;
 import di.DependencyContainer;
-import simulation.entities.components.impl.FoxMoveComponent;
 import simulation.entities.components.impl.DefaultDrawingComponent;
 import simulation.entities.components.impl.DefaultPositionComponent;
+import simulation.entities.components.impl.FoxMoveComponent;
 import simulation.field.Field;
 
 import java.awt.*;
@@ -19,7 +21,7 @@ public class Fox extends Animal {
         (FoxMoveComponent) DependencyContainer.getInstance(FoxMoveComponent.class),
         (DefaultPositionComponent) DependencyContainer.getInstance(DefaultPositionComponent.class)
     );
-    super.color = Color.RED;
+    super.color = Config.getColorProperty(ConfigValue.FOX_COLOR);
     super.energy = 20;
   }
 
@@ -36,7 +38,6 @@ public class Fox extends Animal {
 
       if (!field.cellTaken(newX, newY)) {
         var fox = new Fox();
-        fox.setPosition(newX, newY);
         energy /= 2;
         fox.setEnergy(energy);
         field.add(newX, newY, fox);

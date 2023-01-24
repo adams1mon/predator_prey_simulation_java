@@ -4,12 +4,10 @@ import di.annotations.Autowired;
 import di.annotations.Component;
 import simulation.entities.Animal;
 import simulation.entities.Food;
-import simulation.entities.Rabbit;
 import simulation.entities.components.MoveComponent;
 import simulation.field.Field;
 
 import static simulation.entities.Food.ENERGY_PER_FOOD;
-import static simulation.entities.Fox.ENERGY_PER_RABBIT;
 
 @Component
 public class RabbitMoveComponent implements MoveComponent {

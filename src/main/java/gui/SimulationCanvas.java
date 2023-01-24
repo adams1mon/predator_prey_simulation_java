@@ -15,14 +15,16 @@ public class SimulationCanvas extends JPanel {
   private final Field field;
 
   @Autowired
-  public SimulationCanvas(Config config, Field field) {
+  public SimulationCanvas(Field field) {
     this.field = field;
 
-    var canvasWidth = config.getProperty(ConfigValue.WIDTH) * config.getProperty(ConfigValue.CELL_SIZE);
-    var canvasHeight = config.getProperty(ConfigValue.HEIGHT) * config.getProperty(ConfigValue.CELL_SIZE);
+    var canvasWidth = Config.getIntProperty(ConfigValue.WIDTH) * Config.getIntProperty(ConfigValue.CELL_SIZE);
+    var canvasHeight = Config.getIntProperty(ConfigValue.HEIGHT) * Config.getIntProperty(ConfigValue.CELL_SIZE);
 
     setPreferredSize(new Dimension(canvasWidth, canvasHeight));
     setBounds(0, 0, canvasWidth, canvasHeight);
+    setOpaque(true);
+    setBackground(Color.WHITE);
   }
 
   @Override

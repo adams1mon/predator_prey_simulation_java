@@ -1,14 +1,12 @@
-import config.Config;
 import di.DependencyContainer;
-import di.annotations.Autowired;
-import di.annotations.Bean;
-import di.annotations.Component;
+import simulation.entities.components.impl.DefaultDrawingComponent;
+import simulation.entities.components.impl.DefaultPositionComponent;
+import simulation.entities.components.impl.FoxMoveComponent;
+import simulation.entities.components.impl.RabbitMoveComponent;
 
-@Component
+import java.util.List;
+
 public class Main {
-
-  @Autowired
-  public Main() {}
 
   public static void main(String[] args) {
 
@@ -17,12 +15,13 @@ public class Main {
     // need the config class too, but the container is unaware of this dependency,
     // so we need to take care of it manually
 
-//    DependencyContainer.register(new Config());
-    DependencyContainer.initializeContext();
-  }
+    List.of(
+        new DefaultDrawingComponent(),
+        new DefaultPositionComponent(),
+        new FoxMoveComponent(),
+        new RabbitMoveComponent()
+    ).forEach(DependencyContainer::register);
 
-  @Bean
-  public Config getConfig() {
-    return new Config();
+    DependencyContainer.initializeContext();
   }
 }
