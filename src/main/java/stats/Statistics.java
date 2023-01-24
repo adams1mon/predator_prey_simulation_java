@@ -1,5 +1,7 @@
 package stats;
 
+import config.Config;
+import config.ConfigValue;
 import simulation.entities.FieldEntity;
 import simulation.entities.Food;
 import simulation.entities.Fox;
@@ -76,7 +78,7 @@ public class Statistics {
       while(statisticsThreadRunning) {
         computeStats();
         try {
-          Thread.sleep(1000);
+          Thread.sleep(Config.getIntProperty(ConfigValue.STAT_UPDATE_INTERVAL_MILLIS));
         } catch (InterruptedException e) {
           e.printStackTrace();
         }

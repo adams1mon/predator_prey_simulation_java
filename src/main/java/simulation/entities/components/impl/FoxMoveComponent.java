@@ -1,5 +1,7 @@
 package simulation.entities.components.impl;
 
+import config.Config;
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import simulation.entities.Animal;
@@ -7,8 +9,6 @@ import simulation.entities.Food;
 import simulation.entities.Rabbit;
 import simulation.entities.components.MoveComponent;
 import simulation.field.Field;
-
-import static simulation.entities.Fox.ENERGY_PER_RABBIT;
 
 @Component
 public class FoxMoveComponent implements MoveComponent {
@@ -36,7 +36,7 @@ public class FoxMoveComponent implements MoveComponent {
     if (entity != null) {
       if (entity instanceof Rabbit) {
         field.remove(newX, newY);
-        animal.addEnergy(ENERGY_PER_RABBIT);
+        animal.addEnergy(Config.getIntProperty(ConfigValue.RABBIT_ENERGY_CONTENT));
       } else if (entity instanceof Food) {
         field.remove(newX, newY);
       } else {

@@ -96,7 +96,7 @@ public class StatisticsPanel extends JPanel {
     String rabbitCountTemplate = "Rabbit count: %d (%.2f)";
     rabbitCountLabel.setText(String.format(rabbitCountTemplate, statistics.rabbitCount, statistics.rabbitPercentage));
 
-    String foodCountTemplate = "Food count (percentage against population): %d (%.2f)";
+    String foodCountTemplate = "Food count (%% against population): %d (%.2f)";
     foodCountLabel.setText(String.format(foodCountTemplate, statistics.foodCount, statistics.foodPercentage));
 
     String foxEnergyTemplate = "Fox avg energy: %.2f";

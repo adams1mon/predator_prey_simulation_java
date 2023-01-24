@@ -1,13 +1,13 @@
 package simulation.entities.components.impl;
 
+import config.Config;
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import simulation.entities.Animal;
 import simulation.entities.Food;
 import simulation.entities.components.MoveComponent;
 import simulation.field.Field;
-
-import static simulation.entities.Food.ENERGY_PER_FOOD;
 
 @Component
 public class RabbitMoveComponent implements MoveComponent {
@@ -34,7 +34,7 @@ public class RabbitMoveComponent implements MoveComponent {
     if (entity != null) {
       if (entity instanceof Food) {
         field.remove(newX, newY);
-        animal.addEnergy(ENERGY_PER_FOOD);
+        animal.addEnergy(Config.getIntProperty(ConfigValue.FOOD_ENERGY_CONTENT));
       } else {
         return;
       }

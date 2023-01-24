@@ -8,8 +8,6 @@ import simulation.entities.components.impl.DefaultPositionComponent;
 import simulation.entities.components.impl.RabbitMoveComponent;
 import simulation.field.Field;
 
-import java.awt.*;
-
 public class Rabbit extends Animal {
 
   public static final int ENERGY_LIMIT = 24;

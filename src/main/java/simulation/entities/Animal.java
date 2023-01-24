@@ -8,7 +8,8 @@ import utils.Pair;
 
 public abstract class Animal extends FieldEntity {
 
-  public int energy;
+  protected int energy;
+  protected int energyLimit;
 
   protected MoveComponent moveComponent;
   protected PositionComponent positionComponent;

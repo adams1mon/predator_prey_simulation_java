@@ -8,12 +8,7 @@ import simulation.entities.components.impl.DefaultPositionComponent;
 import simulation.entities.components.impl.FoxMoveComponent;
 import simulation.field.Field;
 
-import java.awt.*;
-
 public class Fox extends Animal {
-
-  public static final int ENERGY_LIMIT = 30;
-  public static final int ENERGY_PER_RABBIT = 10;
 
   public Fox() {
     super(
@@ -23,6 +18,7 @@ public class Fox extends Animal {
     );
     super.color = Config.getColorProperty(ConfigValue.FOX_COLOR);
     super.energy = 20;
+    super.energyLimit = Config.getIntProperty(ConfigValue.FOX_ENERGY_LIMIT);
   }
 
   /**
@@ -31,7 +27,7 @@ public class Fox extends Animal {
    */
   @Override
   public void spawnOffspring(Field field) {
-    if (energy >= ENERGY_LIMIT) {
+    if (energy >= energyLimit) {
       var newPos = getNewPosition();
       var newX = newPos.getFirst();
       var newY = newPos.getSecond();

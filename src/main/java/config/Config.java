@@ -6,13 +6,16 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Properties;
+import java.util.function.Function;
 
 public class Config {
 
   public static String CONFIG_FILE = "config.properties";
   private static final Logger log = LoggerFactory.getLogger(Config.class);
   private static final Properties PROPERTIES = new Properties();
+  private static final HashMap<ConfigValue, Object> CACHE = new HashMap<>();
 
   static {
     loadDefaults();
@@ -41,22 +44,34 @@ public class Config {
 
   public static void setProperty(ConfigValue key, String value) {
     PROPERTIES.put(key.name(), value);
+    CACHE.remove(key);
   }
 
-  public static int getIntProperty(ConfigValue value) {
-    return Integer.parseInt(PROPERTIES.getProperty(value.name()));
+  public static int getIntProperty(ConfigValue key) {
+    return cacheIfNotPresent(key, (Integer::parseInt));
   }
 
-  public static double getDoubleProperty(ConfigValue value) {
-    return Double.parseDouble(PROPERTIES.getProperty(value.name()));
+  public static double getDoubleProperty(ConfigValue key) {
+    return cacheIfNotPresent(key, Double::parseDouble);
   }
 
-  public static Color getColorProperty(ConfigValue value) {
-    try {
-      log.info(Color.class.getField(PROPERTIES.getProperty(value.name())).get(null).toString());
-      return (Color) Color.class.getField(PROPERTIES.getProperty(value.name())).get(null);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new RuntimeException("Error when trying to get color " + value.name(), e);
+  public static Color getColorProperty(ConfigValue key) {
+    return cacheIfNotPresent(key, s -> {
+      try {
+        return (Color) Color.class.getField(PROPERTIES.getProperty(key.name())).get(null);
+      } catch (NoSuchFieldException | IllegalAccessException e) {
+        throw new RuntimeException("Error when trying to get color " + key.name(), e);
+      }
+    });
+  }
+
+  private static <T> T cacheIfNotPresent(ConfigValue key, Function<String, T> getValue) {
+    var obj = CACHE.get(key);
+    if (obj == null) {
+      var value = getValue.apply(PROPERTIES.getProperty(key.name()));
+      CACHE.put(key, value);
+      return value;
     }
+    return (T) obj;
   }
 }

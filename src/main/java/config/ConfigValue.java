@@ -6,6 +6,7 @@ public enum ConfigValue {
   HEIGHT("80"),
   CELL_SIZE("10"),
   UPDATE_INTERVAL_MILLIS("50"),
+  STAT_UPDATE_INTERVAL_MILLIS("1000"),
 
   RABBIT_COUNT("50"),
   FOX_COUNT("50"),

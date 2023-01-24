@@ -21,10 +21,6 @@ public abstract class FieldEntity {
     this.drawingComponent = drawingComponent;
   }
 
-  public void setColor(Color color) {
-    this.color = color;
-  }
-
   public Pair<Integer, Integer> getPosition() {
     return new Pair<>(x, y);
   }
