@@ -31,6 +31,9 @@ public class SimulationCanvas extends JPanel {
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     field.draw(g);
-    field.simulate();
+  }
+
+  public Field getField() {
+    return field;
   }
 }

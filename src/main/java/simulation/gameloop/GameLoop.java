@@ -5,20 +5,25 @@ import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import gui.SimulationCanvas;
+import simulation.field.Field;
 
 @Component
 public class GameLoop {
 
-  private final int intervalMillis;
+  private final int updateIntervalMillis;
+  private final int updateIntervalLimitMillis;
 
   private final SimulationCanvas canvas;
+  private final Field field;
   private boolean running = false;
   private Thread thread;
 
   @Autowired
   public GameLoop(SimulationCanvas canvas) {
-    intervalMillis = Config.getIntProperty(ConfigValue.UPDATE_INTERVAL_MILLIS);
+    updateIntervalMillis = Config.getIntProperty(ConfigValue.UPDATE_INTERVAL_MILLIS);
+    updateIntervalLimitMillis = Config.getIntProperty(ConfigValue.UPDATE_INTERVAL_LIMIT_MILLIS);
     this.canvas = canvas;
+    field = canvas.getField();
   }
 
   public void start() {
@@ -26,10 +31,24 @@ public class GameLoop {
 
     thread = new Thread(() -> {
       running = true;
+
+      double previous = System.currentTimeMillis();
+      double lag = 0;
       while (running) {
+
+        double current = System.currentTimeMillis();
+        double elapsed = current - previous;
+        previous = current;
+        lag += elapsed;
+
+        while (lag >= updateIntervalMillis) {
+          field.simulate();
+          lag -= updateIntervalMillis;
+        }
+
         canvas.repaint();
         try {
-          Thread.sleep(intervalMillis);
+          Thread.sleep(updateIntervalLimitMillis);
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
