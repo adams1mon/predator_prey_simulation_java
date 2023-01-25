@@ -6,10 +6,12 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
+    implementation 'edu.patterns:di-container:1.1.0-SNAPSHOT'
     implementation 'ch.qos.logback:logback-classic:1.4.5'
     implementation 'org.jetbrains:annotations:20.1.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
