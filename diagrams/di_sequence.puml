@@ -1,11 +1,11 @@
 @startuml
 
+Main -> DependencyContainer: initializeContext()
+DependencyContainer -> PackageScanner: findClasses(): classes
+
 PackageScanner -> PackageScanner: findResourceDirectories(): resourceDir
 PackageScanner -> PackageScanner: findClassesInDirectories(resourceDir)
 
-Main -> DependencyContainer: initializeContext()
-
-DependencyContainer -> PackageScanner: getClasses(): classes
 DependencyContainer -> DependencyContainer: getComponentClasses(classes): compClasses
 DependencyContainer -> DependencyContainer: initializeDependencyGraph(compClasses): graph
 DependencyContainer -> DependencyContainer: instantiateDependencies(graph): graph

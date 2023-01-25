@@ -37,7 +37,7 @@ public class DependencyContainer {
 
   public static void initializeContext() {
     log.info("initializing context");
-    var allClasses = PackageScanner.getClasses();
+    var allClasses = PackageScanner.findClasses();
     var classes = getComponentClasses(allClasses);
     var graph = initializeDependencyGraph(classes);
     instantiateDependencies(graph);

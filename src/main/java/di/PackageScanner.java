@@ -17,17 +17,6 @@ public class PackageScanner {
   private static final List<File> resourceDirectories = new LinkedList<>();
   private static final Set<Class<?>> classes = new HashSet<>();
 
-  static {
-    try {
-      // find all classes, beginning from the package root
-      resourceDirectories.addAll(findResourceDirectories(PACKAGE_ROOT));
-      classes.addAll(findClassesInDirectories(resourceDirectories, PACKAGE_ROOT));
-    } catch (Exception e) {
-      log.error("error while scanning resource directories and classes");
-      e.printStackTrace();
-      System.exit(1);
-    }
-  }
 
   private static List<File> findResourceDirectories(String packageName) throws IOException {
     String path = packageName.replace('.', '/');
@@ -96,7 +85,16 @@ public class PackageScanner {
     return classes;
   }
 
-  public static Set<Class<?>> getClasses() {
+  public static Set<Class<?>> findClasses() {
+    try {
+      // find all classes, beginning from the package root
+      resourceDirectories.addAll(findResourceDirectories(PACKAGE_ROOT));
+      classes.addAll(findClassesInDirectories(resourceDirectories, PACKAGE_ROOT));
+    } catch (Exception e) {
+      log.error("error while scanning resource directories and classes");
+      e.printStackTrace();
+      System.exit(1);
+    }
     return classes;
   }
 }
