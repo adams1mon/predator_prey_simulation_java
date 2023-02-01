@@ -1,5 +1,7 @@
 package gui;
 
+import config.Config;
+import config.ConfigValue;
 import di.annotations.Autowired;
 import di.annotations.Component;
 import simulation.gameloop.GameLoop;
@@ -17,7 +19,7 @@ public class MainWindow extends JFrame {
       StatisticsPanel statisticsPanel,
       GameLoop gameLoop
   ) {
-    setupFrame("default title", canvas, controlPanel, statisticsPanel);
+    setupFrame(Config.getProperty(ConfigValue.TITLE), canvas, controlPanel, statisticsPanel);
     initGameLoop(gameLoop);
   }
 

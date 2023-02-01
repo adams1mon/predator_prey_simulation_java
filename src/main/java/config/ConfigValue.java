@@ -2,6 +2,8 @@ package config;
 
 public enum ConfigValue {
 
+  TITLE("Predator-Prey Simulation"),
+
   WIDTH("120"),
   HEIGHT("80"),
   CELL_SIZE("10"),
@@ -18,11 +20,13 @@ public enum ConfigValue {
   FOOD_ENERGY_CONTENT("10"),
   RABBIT_ENERGY_CONTENT("10"),
 
+
+  BACKGROUND_COLOR("WHITE"),
   RABBIT_COLOR("GRAY"),
   FOX_COLOR("RED"),
   FOOD_COLOR("ORANGE");
 
-  public String value;
+  public final String value;
 
   ConfigValue(String defaultValue) {
     this.value = defaultValue;

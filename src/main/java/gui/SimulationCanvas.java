@@ -24,7 +24,7 @@ public class SimulationCanvas extends JPanel {
     setPreferredSize(new Dimension(canvasWidth, canvasHeight));
     setBounds(0, 0, canvasWidth, canvasHeight);
     setOpaque(true);
-    setBackground(Color.WHITE);
+    setBackground(Config.getColorProperty(ConfigValue.BACKGROUND_COLOR));
   }
 
   @Override
